@@ -1,0 +1,20 @@
+.masonry-item.col-md-6
+    .bgc-white.p-20.bd
+        h6.c-grey-900 Change Your Password
+        .mT-30
+            if success
+                .alert.alert-success(role='alert') #{success}
+            if failure
+                .alert.alert-danger(role='alert') #{failure}
+            form(method="post" action="/update")
+                .form-group
+                label(for='email') Current Password
+                input.form-control#password(type='password', name='password')
+                .form-group
+                label(for='email') New Password
+                input.form-control#newPassword(type='password', name='newPassword')
+                .form-group
+                label(for='password') Confirm New Password
+                input.form-control#confirmPassword(type='password', name='confirmPassword')
+                .form-group
+                button.btn.btn-primary(type='submit') Submit

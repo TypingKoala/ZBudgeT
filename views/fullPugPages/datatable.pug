@@ -1,0 +1,710 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width,initial-scale=1,shrink-to-fit=no')
+    title Data Tables
+    style #loader{transition:all .3s ease-in-out;opacity:1;visibility:visible;position:fixed;height:100vh;width:100%;background:#fff;z-index:90000}#loader.fadeOut{opacity:0;visibility:hidden}.spinner{width:40px;height:40px;position:absolute;top:calc(50% - 20px);left:calc(50% - 20px);background-color:#333;border-radius:100%;-webkit-animation:sk-scaleout 1s infinite ease-in-out;animation:sk-scaleout 1s infinite ease-in-out}@-webkit-keyframes sk-scaleout{0%{-webkit-transform:scale(0)}100%{-webkit-transform:scale(1);opacity:0}}@keyframes sk-scaleout{0%{-webkit-transform:scale(0);transform:scale(0)}100%{-webkit-transform:scale(1);transform:scale(1);opacity:0}}
+    link(href='style.css', rel='stylesheet')
+  body.app
+    #loader
+      .spinner
+    script window.addEventListener('load', () => {
+        const loader = document.getElementById('loader');
+        setTimeout(() => {
+          loader.classList.add('fadeOut');
+        }, 300);
+      });
+    div
+      .sidebar
+        .sidebar-inner
+          .sidebar-logo
+            .peers.ai-c.fxw-nw
+              .peer.peer-greed
+                a.sidebar-link.td-n(href='/')
+                  .peers.ai-c.fxw-nw
+                    .peer
+                      .logo
+                        img(src='assets/static/images/logo.png', alt='')
+                    .peer.peer-greed
+                      h5.lh-1.mB-0.logo-text Adminator
+              .peer
+                .mobile-toggle.sidebar-toggle
+                  a.td-n(href='')
+                    i.ti-arrow-circle-left
+          ul.sidebar-menu.scrollable.pos-r
+            li.nav-item.mT-30.active
+              a.sidebar-link(href='/')
+                span.icon-holder
+                  i.c-blue-500.ti-home
+                span.title Dashboard
+            li.nav-item
+              a.sidebar-link(href='email.html')
+                span.icon-holder
+                  i.c-brown-500.ti-email
+                span.title Email
+            li.nav-item
+              a.sidebar-link(href='compose.html')
+                span.icon-holder
+                  i.c-blue-500.ti-share
+                span.title Compose
+            li.nav-item
+              a.sidebar-link(href='calendar.html')
+                span.icon-holder
+                  i.c-deep-orange-500.ti-calendar
+                span.title Calendar
+            li.nav-item
+              a.sidebar-link(href='chat.html')
+                span.icon-holder
+                  i.c-deep-purple-500.ti-comment-alt
+                span.title Chat
+            li.nav-item
+              a.sidebar-link(href='charts.html')
+                span.icon-holder
+                  i.c-indigo-500.ti-bar-chart
+                span.title Charts
+            li.nav-item
+              a.sidebar-link(href='forms.html')
+                span.icon-holder
+                  i.c-light-blue-500.ti-pencil
+                span.title Forms
+            li.nav-item.dropdown
+              a.sidebar-link(href='ui.html')
+                span.icon-holder
+                  i.c-pink-500.ti-palette
+                span.title UI Elements
+            li.nav-item.dropdown
+              a.dropdown-toggle(href='javascript:void(0);')
+                span.icon-holder
+                  i.c-orange-500.ti-layout-list-thumb
+                span.title Tables
+                span.arrow
+                  i.ti-angle-right
+              ul.dropdown-menu
+                li
+                  a.sidebar-link(href='basic-table.html') Basic Table
+                li
+                  a.sidebar-link(href='datatable.html') Data Table
+            li.nav-item.dropdown
+              a.dropdown-toggle(href='javascript:void(0);')
+                span.icon-holder
+                  i.c-purple-500.ti-map
+                span.title Maps
+                span.arrow
+                  i.ti-angle-right
+              ul.dropdown-menu
+                li
+                  a(href='google-maps.html') Google Map
+                li
+                  a(href='vector-maps.html') Vector Map
+            li.nav-item.dropdown
+              a.dropdown-toggle(href='javascript:void(0);')
+                span.icon-holder
+                  i.c-red-500.ti-files
+                span.title Pages
+                span.arrow
+                  i.ti-angle-right
+              ul.dropdown-menu
+                li
+                  a.sidebar-link(href='blank.html') Blank
+                li
+                  a.sidebar-link(href='404.html') 404
+                li
+                  a.sidebar-link(href='500.html') 500
+                li
+                  a.sidebar-link(href='signin.html') Sign In
+                li
+                  a.sidebar-link(href='signup.html') Sign Up
+            li.nav-item.dropdown
+              a.dropdown-toggle(href='javascript:void(0);')
+                span.icon-holder
+                  i.c-teal-500.ti-view-list-alt
+                span.title Multiple Levels
+                span.arrow
+                  i.ti-angle-right
+              ul.dropdown-menu
+                li.nav-item.dropdown
+                  a(href='javascript:void(0);')
+                    span Menu Item
+                li.nav-item.dropdown
+                  a(href='javascript:void(0);')
+                    span Menu Item
+                    span.arrow
+                      i.ti-angle-right
+                  ul.dropdown-menu
+                    li
+                      a(href='javascript:void(0);') Menu Item
+                    li
+                      a(href='javascript:void(0);') Menu Item
+      .page-container
+        .header.navbar
+          .header-container
+            ul.nav-left
+              li
+                a#sidebar-toggle.sidebar-toggle(href='javascript:void(0);')
+                  i.ti-menu
+              li.search-box
+                a.search-toggle.no-pdd-right(href='javascript:void(0);')
+                  i.search-icon.ti-search.pdd-right-10
+                  i.search-icon-close.ti-close.pdd-right-10
+              li.search-input
+                input.form-control(type='text', placeholder='Search...')
+            ul.nav-right
+              li.notifications.dropdown
+                span.counter.bgc-red 3
+                a.dropdown-toggle.no-after(href='', data-toggle='dropdown')
+                  i.ti-bell
+                ul.dropdown-menu
+                  li.pX-20.pY-15.bdB
+                    i.ti-bell.pR-10
+                    span.fsz-sm.fw-600.c-grey-900 Notifications
+                  li
+                    ul.ovY-a.pos-r.scrollable.lis-n.p-0.m-0.fsz-sm
+                      li
+                        a.peers.fxw-nw.td-n.p-20.bdB.c-grey-800.cH-blue.bgcH-grey-100(href='')
+                          .peer.mR-15
+                            img.w-3r.bdrs-50p(src='https://randomuser.me/api/portraits/men/1.jpg', alt='')
+                          .peer.peer-greed
+                            span
+                              span.fw-500 John Doe
+                              span.c-grey-600
+                                | liked your
+                                span.text-dark post
+                            p.m-0
+                              small.fsz-xs 5 mins ago
+                      li
+                        a.peers.fxw-nw.td-n.p-20.bdB.c-grey-800.cH-blue.bgcH-grey-100(href='')
+                          .peer.mR-15
+                            img.w-3r.bdrs-50p(src='https://randomuser.me/api/portraits/men/2.jpg', alt='')
+                          .peer.peer-greed
+                            span
+                              span.fw-500 Moo Doe
+                              span.c-grey-600
+                                | liked your
+                                span.text-dark cover image
+                            p.m-0
+                              small.fsz-xs 7 mins ago
+                      li
+                        a.peers.fxw-nw.td-n.p-20.bdB.c-grey-800.cH-blue.bgcH-grey-100(href='')
+                          .peer.mR-15
+                            img.w-3r.bdrs-50p(src='https://randomuser.me/api/portraits/men/3.jpg', alt='')
+                          .peer.peer-greed
+                            span
+                              span.fw-500 Lee Doe
+                              span.c-grey-600
+                                | commented on your
+                                span.text-dark video
+                            p.m-0
+                              small.fsz-xs 10 mins ago
+                  li.pX-20.pY-15.ta-c.bdT
+                    span
+                      a.c-grey-600.cH-blue.fsz-sm.td-n(href='')
+                        | View All Notifications
+                        i.ti-angle-right.fsz-xs.mL-10
+              li.notifications.dropdown
+                span.counter.bgc-blue 3
+                a.dropdown-toggle.no-after(href='', data-toggle='dropdown')
+                  i.ti-email
+                ul.dropdown-menu
+                  li.pX-20.pY-15.bdB
+                    i.ti-email.pR-10
+                    span.fsz-sm.fw-600.c-grey-900 Emails
+                  li
+                    ul.ovY-a.pos-r.scrollable.lis-n.p-0.m-0.fsz-sm
+                      li
+                        a.peers.fxw-nw.td-n.p-20.bdB.c-grey-800.cH-blue.bgcH-grey-100(href='')
+                          .peer.mR-15
+                            img.w-3r.bdrs-50p(src='https://randomuser.me/api/portraits/men/1.jpg', alt='')
+                          .peer.peer-greed
+                            div
+                              .peers.jc-sb.fxw-nw.mB-5
+                                .peer
+                                  p.fw-500.mB-0 John Doe
+                                .peer
+                                  small.fsz-xs 5 mins ago
+                              span.c-grey-600.fsz-sm Want to create your own customized data generator for your app...
+                      li
+                        a.peers.fxw-nw.td-n.p-20.bdB.c-grey-800.cH-blue.bgcH-grey-100(href='')
+                          .peer.mR-15
+                            img.w-3r.bdrs-50p(src='https://randomuser.me/api/portraits/men/2.jpg', alt='')
+                          .peer.peer-greed
+                            div
+                              .peers.jc-sb.fxw-nw.mB-5
+                                .peer
+                                  p.fw-500.mB-0 Moo Doe
+                                .peer
+                                  small.fsz-xs 15 mins ago
+                              span.c-grey-600.fsz-sm Want to create your own customized data generator for your app...
+                      li
+                        a.peers.fxw-nw.td-n.p-20.bdB.c-grey-800.cH-blue.bgcH-grey-100(href='')
+                          .peer.mR-15
+                            img.w-3r.bdrs-50p(src='https://randomuser.me/api/portraits/men/3.jpg', alt='')
+                          .peer.peer-greed
+                            div
+                              .peers.jc-sb.fxw-nw.mB-5
+                                .peer
+                                  p.fw-500.mB-0 Lee Doe
+                                .peer
+                                  small.fsz-xs 25 mins ago
+                              span.c-grey-600.fsz-sm Want to create your own customized data generator for your app...
+                  li.pX-20.pY-15.ta-c.bdT
+                    span
+                      a.c-grey-600.cH-blue.fsz-sm.td-n(href='email.html')
+                        | View All Email
+                        i.fs-xs.ti-angle-right.mL-10
+              li.dropdown
+                a.dropdown-toggle.no-after.peers.fxw-nw.ai-c.lh-1(href='', data-toggle='dropdown')
+                  .peer.mR-10
+                    img.w-2r.bdrs-50p(src='https://randomuser.me/api/portraits/men/10.jpg', alt='')
+                  .peer
+                    span.fsz-sm.c-grey-900 John Doe
+                ul.dropdown-menu.fsz-sm
+                  li
+                    a.d-b.td-n.pY-5.bgcH-grey-100.c-grey-700(href='')
+                      i.ti-settings.mR-10
+                      span Setting
+                  li
+                    a.d-b.td-n.pY-5.bgcH-grey-100.c-grey-700(href='')
+                      i.ti-user.mR-10
+                      span Profile
+                  li
+                    a.d-b.td-n.pY-5.bgcH-grey-100.c-grey-700(href='email.html')
+                      i.ti-email.mR-10
+                      span Messages
+                  li.divider(role='separator')
+                  li
+                    a.d-b.td-n.pY-5.bgcH-grey-100.c-grey-700(href='')
+                      i.ti-power-off.mR-10
+                      span Logout
+        main.main-content.bgc-grey-100
+          #mainContent
+            .container-fluid
+              h4.c-grey-900.mT-10.mB-30 Data Tables
+              .row
+                .col-md-12
+                  .bgc-white.bd.bdrs-3.p-20.mB-20
+                    h4.c-grey-900.mB-20 Bootstrap Data Table
+                    table#dataTable.table.table-striped.table-bordered(cellspacing='0', width='100%')
+                      thead
+                        tr
+                          th Name
+                          th Position
+                          th Office
+                          th Age
+                          th Start date
+                          th Salary
+                      tfoot
+                        tr
+                          th Name
+                          th Position
+                          th Office
+                          th Age
+                          th Start date
+                          th Salary
+                      tbody
+                        tr
+                          td Tiger Nixon
+                          td System Architect
+                          td Edinburgh
+                          td 61
+                          td 2011/04/25
+                          td $320,800
+                        tr
+                          td Garrett Winters
+                          td Accountant
+                          td Tokyo
+                          td 63
+                          td 2011/07/25
+                          td $170,750
+                        tr
+                          td Ashton Cox
+                          td Junior Technical Author
+                          td San Francisco
+                          td 66
+                          td 2009/01/12
+                          td $86,000
+                        tr
+                          td Cedric Kelly
+                          td Senior Javascript Developer
+                          td Edinburgh
+                          td 22
+                          td 2012/03/29
+                          td $433,060
+                        tr
+                          td Airi Satou
+                          td Accountant
+                          td Tokyo
+                          td 33
+                          td 2008/11/28
+                          td $162,700
+                        tr
+                          td Brielle Williamson
+                          td Integration Specialist
+                          td New York
+                          td 61
+                          td 2012/12/02
+                          td $372,000
+                        tr
+                          td Herrod Chandler
+                          td Sales Assistant
+                          td San Francisco
+                          td 59
+                          td 2012/08/06
+                          td $137,500
+                        tr
+                          td Rhona Davidson
+                          td Integration Specialist
+                          td Tokyo
+                          td 55
+                          td 2010/10/14
+                          td $327,900
+                        tr
+                          td Colleen Hurst
+                          td Javascript Developer
+                          td San Francisco
+                          td 39
+                          td 2009/09/15
+                          td $205,500
+                        tr
+                          td Sonya Frost
+                          td Software Engineer
+                          td Edinburgh
+                          td 23
+                          td 2008/12/13
+                          td $103,600
+                        tr
+                          td Jena Gaines
+                          td Office Manager
+                          td London
+                          td 30
+                          td 2008/12/19
+                          td $90,560
+                        tr
+                          td Quinn Flynn
+                          td Support Lead
+                          td Edinburgh
+                          td 22
+                          td 2013/03/03
+                          td $342,000
+                        tr
+                          td Charde Marshall
+                          td Regional Director
+                          td San Francisco
+                          td 36
+                          td 2008/10/16
+                          td $470,600
+                        tr
+                          td Haley Kennedy
+                          td Senior Marketing Designer
+                          td London
+                          td 43
+                          td 2012/12/18
+                          td $313,500
+                        tr
+                          td Tatyana Fitzpatrick
+                          td Regional Director
+                          td London
+                          td 19
+                          td 2010/03/17
+                          td $385,750
+                        tr
+                          td Michael Silva
+                          td Marketing Designer
+                          td London
+                          td 66
+                          td 2012/11/27
+                          td $198,500
+                        tr
+                          td Paul Byrd
+                          td Chief Financial Officer (CFO)
+                          td New York
+                          td 64
+                          td 2010/06/09
+                          td $725,000
+                        tr
+                          td Gloria Little
+                          td Systems Administrator
+                          td New York
+                          td 59
+                          td 2009/04/10
+                          td $237,500
+                        tr
+                          td Bradley Greer
+                          td Software Engineer
+                          td London
+                          td 41
+                          td 2012/10/13
+                          td $132,000
+                        tr
+                          td Dai Rios
+                          td Personnel Lead
+                          td Edinburgh
+                          td 35
+                          td 2012/09/26
+                          td $217,500
+                        tr
+                          td Jenette Caldwell
+                          td Development Lead
+                          td New York
+                          td 30
+                          td 2011/09/03
+                          td $345,000
+                        tr
+                          td Yuri Berry
+                          td Chief Marketing Officer (CMO)
+                          td New York
+                          td 40
+                          td 2009/06/25
+                          td $675,000
+                        tr
+                          td Caesar Vance
+                          td Pre-Sales Support
+                          td New York
+                          td 21
+                          td 2011/12/12
+                          td $106,450
+                        tr
+                          td Doris Wilder
+                          td Sales Assistant
+                          td Sidney
+                          td 23
+                          td 2010/09/20
+                          td $85,600
+                        tr
+                          td Angelica Ramos
+                          td Chief Executive Officer (CEO)
+                          td London
+                          td 47
+                          td 2009/10/09
+                          td $1,200,000
+                        tr
+                          td Gavin Joyce
+                          td Developer
+                          td Edinburgh
+                          td 42
+                          td 2010/12/22
+                          td $92,575
+                        tr
+                          td Jennifer Chang
+                          td Regional Director
+                          td Singapore
+                          td 28
+                          td 2010/11/14
+                          td $357,650
+                        tr
+                          td Brenden Wagner
+                          td Software Engineer
+                          td San Francisco
+                          td 28
+                          td 2011/06/07
+                          td $206,850
+                        tr
+                          td Fiona Green
+                          td Chief Operating Officer (COO)
+                          td San Francisco
+                          td 48
+                          td 2010/03/11
+                          td $850,000
+                        tr
+                          td Shou Itou
+                          td Regional Marketing
+                          td Tokyo
+                          td 20
+                          td 2011/08/14
+                          td $163,000
+                        tr
+                          td Michelle House
+                          td Integration Specialist
+                          td Sidney
+                          td 37
+                          td 2011/06/02
+                          td $95,400
+                        tr
+                          td Suki Burks
+                          td Developer
+                          td London
+                          td 53
+                          td 2009/10/22
+                          td $114,500
+                        tr
+                          td Prescott Bartlett
+                          td Technical Author
+                          td London
+                          td 27
+                          td 2011/05/07
+                          td $145,000
+                        tr
+                          td Gavin Cortez
+                          td Team Leader
+                          td San Francisco
+                          td 22
+                          td 2008/10/26
+                          td $235,500
+                        tr
+                          td Martena Mccray
+                          td Post-Sales support
+                          td Edinburgh
+                          td 46
+                          td 2011/03/09
+                          td $324,050
+                        tr
+                          td Unity Butler
+                          td Marketing Designer
+                          td San Francisco
+                          td 47
+                          td 2009/12/09
+                          td $85,675
+                        tr
+                          td Howard Hatfield
+                          td Office Manager
+                          td San Francisco
+                          td 51
+                          td 2008/12/16
+                          td $164,500
+                        tr
+                          td Hope Fuentes
+                          td Secretary
+                          td San Francisco
+                          td 41
+                          td 2010/02/12
+                          td $109,850
+                        tr
+                          td Vivian Harrell
+                          td Financial Controller
+                          td San Francisco
+                          td 62
+                          td 2009/02/14
+                          td $452,500
+                        tr
+                          td Timothy Mooney
+                          td Office Manager
+                          td London
+                          td 37
+                          td 2008/12/11
+                          td $136,200
+                        tr
+                          td Jackson Bradshaw
+                          td Director
+                          td New York
+                          td 65
+                          td 2008/09/26
+                          td $645,750
+                        tr
+                          td Olivia Liang
+                          td Support Engineer
+                          td Singapore
+                          td 64
+                          td 2011/02/03
+                          td $234,500
+                        tr
+                          td Bruno Nash
+                          td Software Engineer
+                          td London
+                          td 38
+                          td 2011/05/03
+                          td $163,500
+                        tr
+                          td Sakura Yamamoto
+                          td Support Engineer
+                          td Tokyo
+                          td 37
+                          td 2009/08/19
+                          td $139,575
+                        tr
+                          td Thor Walton
+                          td Developer
+                          td New York
+                          td 61
+                          td 2013/08/11
+                          td $98,540
+                        tr
+                          td Finn Camacho
+                          td Support Engineer
+                          td San Francisco
+                          td 47
+                          td 2009/07/07
+                          td $87,500
+                        tr
+                          td Serge Baldwin
+                          td Data Coordinator
+                          td Singapore
+                          td 64
+                          td 2012/04/09
+                          td $138,575
+                        tr
+                          td Zenaida Frank
+                          td Software Engineer
+                          td New York
+                          td 63
+                          td 2010/01/04
+                          td $125,250
+                        tr
+                          td Zorita Serrano
+                          td Software Engineer
+                          td San Francisco
+                          td 56
+                          td 2012/06/01
+                          td $115,000
+                        tr
+                          td Jennifer Acosta
+                          td Junior Javascript Developer
+                          td Edinburgh
+                          td 43
+                          td 2013/02/01
+                          td $75,650
+                        tr
+                          td Cara Stevens
+                          td Sales Assistant
+                          td New York
+                          td 46
+                          td 2011/12/06
+                          td $145,600
+                        tr
+                          td Hermione Butler
+                          td Regional Director
+                          td London
+                          td 47
+                          td 2011/03/21
+                          td $356,250
+                        tr
+                          td Lael Greer
+                          td Systems Administrator
+                          td London
+                          td 21
+                          td 2009/02/27
+                          td $103,500
+                        tr
+                          td Jonas Alexander
+                          td Developer
+                          td San Francisco
+                          td 30
+                          td 2010/07/14
+                          td $86,500
+                        tr
+                          td Shad Decker
+                          td Regional Director
+                          td Edinburgh
+                          td 51
+                          td 2008/11/13
+                          td $183,000
+                        tr
+                          td Michael Bruce
+                          td Javascript Developer
+                          td Singapore
+                          td 29
+                          td 2011/06/27
+                          td $183,000
+                        tr
+                          td Donna Snider
+                          td Customer Support
+                          td New York
+                          td 27
+                          td 2011/01/25
+                          td $112,000
+        footer.bdT.ta-c.p-30.lh-0.fsz-sm.c-grey-600
+          span
+            | Copyright © 2017 Designed by
+            a(href='https://colorlib.com', target='_blank', title='Colorlib') Colorlib
+            | . All rights reserved.
+    script(type='text/javascript', src='vendor.js')
+    script(type='text/javascript', src='bundle.js')

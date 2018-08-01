@@ -1,0 +1,37 @@
+{
+  "name": "zbudget",
+  "version": "0.0.1",
+  "description": "Web interface to manage the budget of MIT Zeta Beta Tau",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "git push dokku master",
+    "start": "node app.js"
+  },
+  "author": "Johnny Bui",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "cloudinary": "^1.11.0",
+    "connect-flash": "^0.1.1",
+    "connect-mongo": "^2.0.1",
+    "express": "^4.16.3",
+    "express-flash": "0.0.2",
+    "express-recaptcha": "^4.0.2",
+    "express-session": "^1.15.6",
+    "feature-toggles": "^1.4.0",
+    "mailgun-js": "^0.20.0",
+    "md5": "^2.2.1",
+    "mongoose": "^5.2.3",
+    "openid-client": "^2.2.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "pug": "^2.0.3",
+    "zxcvbn": "^4.4.2"
+  },
+  "devDependencies": {
+    "dotenv": "^6.0.0",
+    "gulp": "^3.9.1"
+  }
+}

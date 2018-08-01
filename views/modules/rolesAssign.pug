@@ -1,0 +1,27 @@
+.row
+    .col-md-12
+        .bgc-white.bd.bdrs-3.p-20.mB-20
+            h4.c-grey-900.mB-20 Roles Admin
+            table#dataTable.table.table-striped.table-bordered(cellspacing='0', width='100%')
+                thead
+                    tr
+                        th Name
+                        th Email
+                        th Roles
+                        th Add Role
+                tfoot
+                    tr
+                        th Name
+                        th Email
+                        th Roles
+                        th Add Role
+                tbody
+                    for user in users
+                        tr
+                            td #{user.name}
+                            td #{user.email}
+                            td #{user.roles}
+                            td 
+                                select(multiple id=`roles`)
+                                    option(value="admin") Admin
+                                    option(value="user") User

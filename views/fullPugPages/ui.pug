@@ -1,0 +1,160 @@
+extends layout
+
+block mainContent
+  .row.gap-20.masonry.pos-r
+    h4.c-grey-900 UI Elements
+    .masonry-sizer.col-md-6
+    .masonry-item.col-md-6
+      .bgc-white.p-20.bd
+        h6.c-grey-900 Alerts
+        .mT-30
+          .alert.alert-primary(role='alert') This is a primary alert—check it out!
+          .alert.alert-secondary(role='alert') This is a secondary alert—check it out!
+          .alert.alert-success(role='alert') This is a success alert—check it out!
+          .alert.alert-danger(role='alert') This is a danger alert—check it out!
+          .alert.alert-warning(role='alert') This is a warning alert—check it out!
+          .alert.alert-info(role='alert') This is a info alert—check it out!
+          .alert.alert-light(role='alert') This is a light alert—check it out!
+          .alert.alert-dark(role='alert') This is a dark alert—check it out!
+    .masonry-item.col-md-6
+      .bgc-white.p-20.bd
+        h6.c-grey-900 Buttons
+        .mT-30
+          .gap-10.peers
+            .peer
+              button.btn.cur-p.btn-primary(type='button') Primary
+            .peer
+              button.btn.cur-p.btn-secondary(type='button') Secondary
+            .peer
+              button.btn.cur-p.btn-success(type='button') Success
+            .peer
+              button.btn.cur-p.btn-danger(type='button') Danger
+            .peer
+              button.btn.cur-p.btn-warning(type='button') Warning
+            .peer
+              button.btn.cur-p.btn-info(type='button') Info
+            .peer
+              button.btn.cur-p.btn-light(type='button') Light
+            .peer
+              button.btn.cur-p.btn-dark(type='button') Dark
+          .w-100.gap-10.peers.mY-20
+            .peer
+              button.btn.cur-p.btn-outline-primary(type='button') Primary
+            .peer
+              button.btn.cur-p.btn-outline-secondary(type='button') Secondary
+            .peer
+              button.btn.cur-p.btn-outline-success(type='button') Success
+            .peer
+              button.btn.cur-p.btn-outline-danger(type='button') Danger
+            .peer
+              button.btn.cur-p.btn-outline-warning(type='button') Warning
+            .peer
+              button.btn.cur-p.btn-outline-info(type='button') Info
+            .peer
+              button.btn.cur-p.btn-outline-light(type='button') Light
+            .peer
+              button.btn.cur-p.btn-outline-dark(type='button') Dark
+          .btn-toolbar(role='toolbar', aria-label='Toolbar with button groups')
+            .btn-group.mr-2(role='group', aria-label='First group')
+              button.btn.btn-success(type='button') 1
+              button.btn.btn-success(type='button') 2
+              button.btn.btn-success(type='button') 3
+              button.btn.btn-success(type='button') 4
+            .btn-group.mr-2(role='group', aria-label='Second group')
+              button.btn.btn-success(type='button') 5
+              button.btn.btn-success(type='button') 6
+              button.btn.btn-success(type='button') 7
+            .btn-group(role='group', aria-label='Third group')
+              button.btn.btn-success(type='button') 8
+    .masonry-item.col-md-6
+      .bgc-white.p-20.bd
+        h6.c-grey-900 Dropdowns
+        .mT-30
+          .dropdown
+            button.btn.btn-secondary.dropdown-toggle#dropdownMenuButton(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') Dropdown button
+            .dropdown-menu(aria-labelledby='dropdownMenuButton')
+              a.dropdown-item(href='#') Action
+              a.dropdown-item(href='#') Another action
+              a.dropdown-item(href='#') Something else here
+          .btn-group.mT-20
+            button.btn.btn-danger(type='button') Action
+            button.btn.btn-danger.dropdown-toggle.dropdown-toggle-split(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+              span.sr-only Toggle Dropdown
+            .dropdown-menu
+              a.dropdown-item(href='#') Action
+              a.dropdown-item(href='#') Another action
+              a.dropdown-item(href='#') Something else here
+              .dropdown-divider
+              a.dropdown-item(href='#') Separated link
+    .masonry-item.col-md-6
+      .bgc-white.p-20.bd
+        h6.c-grey-900 List Group
+        .mT-30
+          .list-group
+            a.list-group-item.list-group-item-action.active(href='#') Cras justo odio
+            a.list-group-item.list-group-item-action(href='#') Dapibus ac facilisis in
+            a.list-group-item.list-group-item-action(href='#') Morbi leo risus
+            a.list-group-item.list-group-item-action(href='#') Porta ac consectetur ac
+            a.list-group-item.list-group-item-action.disabled(href='#') Vestibulum at eros
+    .masonry-item.col-md-6
+      .bgc-white.p-20.bd
+        h6.c-grey-900 Modal
+        .mT-30
+          button.btn.btn-primary(type='button', data-toggle='modal', data-target='#exampleModal') Launch demo modal
+          .modal.fade#exampleModal(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+            .modal-dialog(role='document')
+              .modal-content
+                .modal-header
+                  h5.modal-title#exampleModalLabel Modal title
+                  button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true') ×
+                .modal-body ...
+                .modal-footer
+                  button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                  button.btn.btn-primary(type='button') Save changes
+    .masonry-item.col-md-6
+      .bgc-white.p-20.bd
+        h6.c-grey-900 Popover
+        .mT-30
+          button.btn.btn-danger(type='button', data-toggle='popover', title='Popover title', data-content="And here's some amazing content. It's very engaging. Right?") Click to toggle popover
+    .masonry-item.col-md-6
+      .bgc-white.p-20.bd
+        h6.c-grey-900 Progress
+        .mT-30
+          .layers
+            .layer.w-100
+              h5.mB-5 100k
+              small.fw-600.c-grey-700 Visitors From USA
+              span.pull-right.c-grey-600.fsz-sm 50%
+              .progress.mT-10
+                .progress-bar.bgc-deep-purple-500(role='progressbar', aria-valuenow='50', aria-valuemin='0', aria-valuemax='100', style='width:50%')
+                  span.sr-only 50% Complete
+            .layer.w-100.mT-15
+              h5.mB-5 1M
+              small.fw-600.c-grey-700 Visitors From Europe
+              span.pull-right.c-grey-600.fsz-sm 80%
+              .progress.mT-10
+                .progress-bar.bgc-green-500(role='progressbar', aria-valuenow='50', aria-valuemin='0', aria-valuemax='100', style='width:80%')
+                  span.sr-only 80% Complete
+            .layer.w-100.mT-15
+              h5.mB-5 450k
+              small.fw-600.c-grey-700 Visitors From Australia
+              span.pull-right.c-grey-600.fsz-sm 40%
+              .progress.mT-10
+                .progress-bar.bgc-light-blue-500(role='progressbar', aria-valuenow='50', aria-valuemin='0', aria-valuemax='100', style='width:40%')
+                  span.sr-only 40% Complete
+            .layer.w-100.mT-15
+              h5.mB-5 1B
+              small.fw-600.c-grey-700 Visitors From India
+              span.pull-right.c-grey-600.fsz-sm 90%
+              .progress.mT-10
+                .progress-bar.bgc-blue-grey-500(role='progressbar', aria-valuenow='50', aria-valuemin='0', aria-valuemax='100', style='width:90%')
+                  span.sr-only 90% Complete
+    .masonry-item.col-md-6
+      .bgc-white.p-20.bd
+        h6.c-grey-900 Tootips
+        .mT-30
+          button.btn.btn-primary(type='button', data-toggle='tooltip', data-placement='top', title='Tooltip on top') Tooltip on top
+          button.btn.btn-secondary(type='button', data-toggle='tooltip', data-placement='right', title='Tooltip on right') Tooltip on right
+          button.btn.btn-success(type='button', data-toggle='tooltip', data-placement='bottom', title='Tooltip on bottom') Tooltip on bottom
+          button.btn.btn-danger(type='button', data-toggle='tooltip', data-placement='left', title='Tooltip on left') Tooltip on left

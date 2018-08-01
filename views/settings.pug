@@ -1,0 +1,10 @@
+extends layout
+
+block mainContent
+    .row.gap-20.masonry.pos-r
+        h4.c-grey-900 UI Elements
+        .masonry-sizer.col-md-6
+        if localLoginEnabled
+            include modules/changeUserInfo.pug
+        include modules/rolesList.pug
+        include modules/apiInfo.pug

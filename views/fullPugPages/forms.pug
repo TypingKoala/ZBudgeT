@@ -1,0 +1,491 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width,initial-scale=1,shrink-to-fit=no')
+    title Forms
+    style #loader {
+      transition: all .3s ease-in-out;
+      opacity: 1;
+      visibility: visible;
+      position: fixed;
+      height: 100vh;
+      width: 100%;
+      background: #fff;
+      z-index: 90000
+    }
+
+    #loader.fadeOut {
+      opacity: 0;
+      visibility: hidden
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      position: absolute;
+      top: calc(50% - 20px);
+      left: calc(50% - 20px);
+      background-color: #333;
+      border-radius: 100%;
+      -webkit-animation: sk-scaleout 1s infinite ease-in-out;
+      animation: sk-scaleout 1s infinite ease-in-out
+    }
+
+    @-webkit-keyframes sk-scaleout {
+      0% {
+        -webkit-transform: scale(0)
+      }
+      100% {
+        -webkit-transform: scale(1);
+        opacity: 0
+      }
+    }
+
+    @keyframes sk-scaleout {
+      0% {
+        -webkit-transform: scale(0);
+        transform: scale(0)
+      }
+      100% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+        opacity: 0
+      }
+    }
+    link(href='style.css', rel='stylesheet')
+  body.app
+    #loader
+      .spinner
+    script window.addEventListener('load', () => {
+      const loader = document.getElementById('loader');
+      setTimeout(() => {
+        loader.classList.add('fadeOut');
+      }, 300);
+    });
+    div
+      .sidebar
+        .sidebar-inner
+          .sidebar-logo
+            .peers.ai-c.fxw-nw
+              .peer.peer-greed
+                a.sidebar-link.td-n(href='index.html')
+                  .peers.ai-c.fxw-nw
+                    .peer
+                      .logo
+                        img(src='assets/static/images/logo.png', alt='')
+                    .peer.peer-greed
+                      h5.lh-1.mB-0.logo-text Adminator
+              .peer
+                .mobile-toggle.sidebar-toggle
+                  a.td-n(href='')
+                    i.ti-arrow-circle-left
+          ul.sidebar-menu.scrollable.pos-r
+            li.nav-item.mT-30.active
+              a.sidebar-link(href='index.html')
+                span.icon-holder
+                  i.c-blue-500.ti-home
+                span.title Dashboard
+            li.nav-item
+              a.sidebar-link(href='email.html')
+                span.icon-holder
+                  i.c-brown-500.ti-email
+                span.title Email
+            li.nav-item
+              a.sidebar-link(href='compose.html')
+                span.icon-holder
+                  i.c-blue-500.ti-share
+                span.title Compose
+            li.nav-item
+              a.sidebar-link(href='calendar.html')
+                span.icon-holder
+                  i.c-deep-orange-500.ti-calendar
+                span.title Calendar
+            li.nav-item
+              a.sidebar-link(href='chat.html')
+                span.icon-holder
+                  i.c-deep-purple-500.ti-comment-alt
+                span.title Chat
+            li.nav-item
+              a.sidebar-link(href='charts.html')
+                span.icon-holder
+                  i.c-indigo-500.ti-bar-chart
+                span.title Charts
+            li.nav-item
+              a.sidebar-link(href='forms.html')
+                span.icon-holder
+                  i.c-light-blue-500.ti-pencil
+                span.title Forms
+            li.nav-item.dropdown
+              a.sidebar-link(href='ui.html')
+                span.icon-holder
+                  i.c-pink-500.ti-palette
+                span.title UI Elements
+            li.nav-item.dropdown
+              a.dropdown-toggle(href='javascript:void(0);')
+                span.icon-holder
+                  i.c-orange-500.ti-layout-list-thumb
+                span.title Tables
+                span.arrow
+                  i.ti-angle-right
+              ul.dropdown-menu
+                li
+                  a.sidebar-link(href='basic-table.html') Basic Table
+                li
+                  a.sidebar-link(href='datatable.html') Data Table
+            li.nav-item.dropdown
+              a.dropdown-toggle(href='javascript:void(0);')
+                span.icon-holder
+                  i.c-purple-500.ti-map
+                span.title Maps
+                span.arrow
+                  i.ti-angle-right
+              ul.dropdown-menu
+                li
+                  a(href='google-maps.html') Google Map
+                li
+                  a(href='vector-maps.html') Vector Map
+            li.nav-item.dropdown
+              a.dropdown-toggle(href='javascript:void(0);')
+                span.icon-holder
+                  i.c-red-500.ti-files
+                span.title Pages
+                span.arrow
+                  i.ti-angle-right
+              ul.dropdown-menu
+                li
+                  a.sidebar-link(href='blank.html') Blank
+                li
+                  a.sidebar-link(href='404.html') 404
+                li
+                  a.sidebar-link(href='500.html') 500
+                li
+                  a.sidebar-link(href='signin.html') Sign In
+                li
+                  a.sidebar-link(href='signup.html') Sign Up
+            li.nav-item.dropdown
+              a.dropdown-toggle(href='javascript:void(0);')
+                span.icon-holder
+                  i.c-teal-500.ti-view-list-alt
+                span.title Multiple Levels
+                span.arrow
+                  i.ti-angle-right
+              ul.dropdown-menu
+                li.nav-item.dropdown
+                  a(href='javascript:void(0);')
+                    span Menu Item
+                li.nav-item.dropdown
+                  a(href='javascript:void(0);')
+                    span Menu Item
+                    span.arrow
+                      i.ti-angle-right
+                  ul.dropdown-menu
+                    li
+                      a(href='javascript:void(0);') Menu Item
+                    li
+                      a(href='javascript:void(0);') Menu Item
+      .page-container
+        .header.navbar
+          .header-container
+            ul.nav-left
+              li
+                a#sidebar-toggle.sidebar-toggle(href='javascript:void(0);')
+                  i.ti-menu
+              li.search-box
+                a.search-toggle.no-pdd-right(href='javascript:void(0);')
+                  i.search-icon.ti-search.pdd-right-10
+                  i.search-icon-close.ti-close.pdd-right-10
+              li.search-input
+                input.form-control(type='text', placeholder='Search...')
+            ul.nav-right
+              li.notifications.dropdown
+                span.counter.bgc-red 3
+                a.dropdown-toggle.no-after(href='', data-toggle='dropdown')
+                  i.ti-bell
+                ul.dropdown-menu
+                  li.pX-20.pY-15.bdB
+                    i.ti-bell.pR-10
+                    span.fsz-sm.fw-600.c-grey-900 Notifications
+                  li
+                    ul.ovY-a.pos-r.scrollable.lis-n.p-0.m-0.fsz-sm
+                      li
+                        a.peers.fxw-nw.td-n.p-20.bdB.c-grey-800.cH-blue.bgcH-grey-100(href='')
+                          .peer.mR-15
+                            img.w-3r.bdrs-50p(src='https://randomuser.me/api/portraits/men/1.jpg', alt='')
+                          .peer.peer-greed
+                            span
+                              span.fw-500 John Doe
+                              span.c-grey-600
+                                | liked your
+                                span.text-dark post
+                            p.m-0
+                              small.fsz-xs 5 mins ago
+                      li
+                        a.peers.fxw-nw.td-n.p-20.bdB.c-grey-800.cH-blue.bgcH-grey-100(href='')
+                          .peer.mR-15
+                            img.w-3r.bdrs-50p(src='https://randomuser.me/api/portraits/men/2.jpg', alt='')
+                          .peer.peer-greed
+                            span
+                              span.fw-500 Moo Doe
+                              span.c-grey-600
+                                | liked your
+                                span.text-dark cover image
+                            p.m-0
+                              small.fsz-xs 7 mins ago
+                      li
+                        a.peers.fxw-nw.td-n.p-20.bdB.c-grey-800.cH-blue.bgcH-grey-100(href='')
+                          .peer.mR-15
+                            img.w-3r.bdrs-50p(src='https://randomuser.me/api/portraits/men/3.jpg', alt='')
+                          .peer.peer-greed
+                            span
+                              span.fw-500 Lee Doe
+                              span.c-grey-600
+                                | commented on your
+                                span.text-dark video
+                            p.m-0
+                              small.fsz-xs 10 mins ago
+                  li.pX-20.pY-15.ta-c.bdT
+                    span
+                      a.c-grey-600.cH-blue.fsz-sm.td-n(href='')
+                        | View All Notifications
+                        i.ti-angle-right.fsz-xs.mL-10
+              li.notifications.dropdown
+                span.counter.bgc-blue 3
+                a.dropdown-toggle.no-after(href='', data-toggle='dropdown')
+                  i.ti-email
+                ul.dropdown-menu
+                  li.pX-20.pY-15.bdB
+                    i.ti-email.pR-10
+                    span.fsz-sm.fw-600.c-grey-900 Emails
+                  li
+                    ul.ovY-a.pos-r.scrollable.lis-n.p-0.m-0.fsz-sm
+                      li
+                        a.peers.fxw-nw.td-n.p-20.bdB.c-grey-800.cH-blue.bgcH-grey-100(href='')
+                          .peer.mR-15
+                            img.w-3r.bdrs-50p(src='https://randomuser.me/api/portraits/men/1.jpg', alt='')
+                          .peer.peer-greed
+                            div
+                              .peers.jc-sb.fxw-nw.mB-5
+                                .peer
+                                  p.fw-500.mB-0 John Doe
+                                .peer
+                                  small.fsz-xs 5 mins ago
+                              span.c-grey-600.fsz-sm Want to create your own customized data generator for your app...
+                      li
+                        a.peers.fxw-nw.td-n.p-20.bdB.c-grey-800.cH-blue.bgcH-grey-100(href='')
+                          .peer.mR-15
+                            img.w-3r.bdrs-50p(src='https://randomuser.me/api/portraits/men/2.jpg', alt='')
+                          .peer.peer-greed
+                            div
+                              .peers.jc-sb.fxw-nw.mB-5
+                                .peer
+                                  p.fw-500.mB-0 Moo Doe
+                                .peer
+                                  small.fsz-xs 15 mins ago
+                              span.c-grey-600.fsz-sm Want to create your own customized data generator for your app...
+                      li
+                        a.peers.fxw-nw.td-n.p-20.bdB.c-grey-800.cH-blue.bgcH-grey-100(href='')
+                          .peer.mR-15
+                            img.w-3r.bdrs-50p(src='https://randomuser.me/api/portraits/men/3.jpg', alt='')
+                          .peer.peer-greed
+                            div
+                              .peers.jc-sb.fxw-nw.mB-5
+                                .peer
+                                  p.fw-500.mB-0 Lee Doe
+                                .peer
+                                  small.fsz-xs 25 mins ago
+                              span.c-grey-600.fsz-sm Want to create your own customized data generator for your app...
+                  li.pX-20.pY-15.ta-c.bdT
+                    span
+                      a.c-grey-600.cH-blue.fsz-sm.td-n(href='email.html')
+                        | View All Email
+                        i.fs-xs.ti-angle-right.mL-10
+              li.dropdown
+                a.dropdown-toggle.no-after.peers.fxw-nw.ai-c.lh-1(href='', data-toggle='dropdown')
+                  .peer.mR-10
+                    img.w-2r.bdrs-50p(src='https://randomuser.me/api/portraits/men/10.jpg', alt='')
+                  .peer
+                    span.fsz-sm.c-grey-900 John Doe
+                ul.dropdown-menu.fsz-sm
+                  li
+                    a.d-b.td-n.pY-5.bgcH-grey-100.c-grey-700(href='')
+                      i.ti-settings.mR-10
+                      span Setting
+                  li
+                    a.d-b.td-n.pY-5.bgcH-grey-100.c-grey-700(href='')
+                      i.ti-user.mR-10
+                      span Profile
+                  li
+                    a.d-b.td-n.pY-5.bgcH-grey-100.c-grey-700(href='email.html')
+                      i.ti-email.mR-10
+                      span Messages
+                  li.divider(role='separator')
+                  li
+                    a.d-b.td-n.pY-5.bgcH-grey-100.c-grey-700(href='')
+                      i.ti-power-off.mR-10
+                      span Logout
+        main.main-content.bgc-grey-100
+          #mainContent
+            .row.gap-20.masonry.pos-r
+              .masonry-sizer.col-md-6
+              .masonry-item.col-md-6
+                .bgc-white.p-20.bd
+                  h6.c-grey-900 Basic Form
+                  .mT-30
+                    form
+                      .form-group
+                        label(for='exampleInputEmail1') Email address
+                        input.form-control#exampleInputEmail1(type='email', aria-describedby='emailHelp', placeholder='Enter email')
+                        small#emailHelp.form-text.text-muted We'll never share your email with anyone else.
+                      .form-group
+                        label(for='exampleInputPassword1') Password
+                        input.form-control#exampleInputPassword1(type='password', placeholder='Password')
+                      .checkbox.checkbox-circle.checkbox-info.peers.ai-c.mB-15
+                        input#inputCall1.peer(type='checkbox', name='inputCheckboxesCall')
+                        label.peers.peer-greed.js-sb.ai-c(for='inputCall1')
+                          span.peer.peer-greed Call John for Dinner
+                      button.btn.btn-primary(type='submit') Submit
+              .masonry-item.col-md-6
+                .bgc-white.p-20.bd
+                  h6.c-grey-900 Complex Form Layout
+                  .mT-30
+                    form
+                      .form-row
+                        .form-group.col-md-6
+                          label(for='inputEmail4') Email
+                          input.form-control#inputEmail4(type='email', placeholder='Email')
+                        .form-group.col-md-6
+                          label(for='inputPassword4') Password
+                          input.form-control#inputPassword4(type='password', placeholder='Password')
+                      .form-group
+                        label(for='inputAddress') Address
+                        input.form-control#inputAddress(type='text', placeholder='1234 Main St')
+                      .form-group
+                        label(for='inputAddress2') Address 2
+                        input.form-control#inputAddress2(type='text', placeholder='Apartment, studio, or floor')
+                      .form-row
+                        .form-group.col-md-6
+                          label(for='inputCity') City
+                          input.form-control#inputCity(type='text')
+                        .form-group.col-md-4
+                          label(for='inputState') State
+                          select#inputState.form-control
+                            option(selected='') Choose...
+                            option ...
+                        .form-group.col-md-2
+                          label(for='inputZip') Zip
+                          input.form-control#inputZip(type='text')
+                      .form-row
+                        .form-group.col-md-6
+                          label.fw-500 Birthdate
+                          .timepicker-input.input-icon.form-group
+                            .input-group
+                              .input-group-addon.bgc-white.bd.bdwR-0
+                                i.ti-calendar
+                              input.form-control.bdc-grey-200.start-date(type='text', placeholder='Datepicker', data-provide='datepicker')
+                      .form-group
+                        .checkbox.checkbox-circle.checkbox-info.peers.ai-c
+                          input#inputCall2.peer(type='checkbox', name='inputCheckboxesCall')
+                          label.peers.peer-greed.js-sb.ai-c(for='inputCall2')
+                            span.peer.peer-greed Call John for Dinner
+                      button.btn.btn-primary(type='submit') Sign in
+              .masonry-item.col-md-6
+                .bgc-white.p-20.bd
+                  h6.c-grey-900 Horizontal Form
+                  .mT-30
+                    form
+                      .form-group.row
+                        label.col-sm-2.col-form-label(for='inputEmail3') Email
+                        .col-sm-10
+                          input.form-control#inputEmail3(type='email', placeholder='Email')
+                      .form-group.row
+                        label.col-sm-2.col-form-label(for='inputPassword3') Password
+                        .col-sm-10
+                          input.form-control#inputPassword3(type='password', placeholder='Password')
+                      fieldset.form-group
+                        .row
+                          legend.col-form-legend.col-sm-2 Radios
+                          .col-sm-10
+                            .form-check
+                              label.form-check-label
+                                input.form-check-input#gridRadios1(type='radio', name='gridRadios', value='option1', checked='')
+                                |  Option one is this and that—be sure to include why it's great
+                            .form-check
+                              label.form-check-label
+                                input.form-check-input#gridRadios2(type='radio', name='gridRadios', value='option2')
+                                |  Option two can be something else and selecting it will deselect option one
+                            .form-check.disabled
+                              label.form-check-label
+                                input.form-check-input#gridRadios3(type='radio', name='gridRadios', value='option3', disabled='')
+                                |  Option three is disabled
+                      .form-group.row
+                        .col-sm-2 Checkbox
+                        .col-sm-10
+                          .form-check
+                            label.form-check-label
+                              input.form-check-input(type='checkbox')
+                              |  Check me out
+                      .form-group.row
+                        .col-sm-10
+                          button.btn.btn-primary(type='submit') Sign in
+              .masonry-item.col-md-6
+                .bgc-white.p-20.bd
+                  h6.c-grey-900 Disabled Forms
+                  .mT-30
+                    form
+                      fieldset(disabled='')
+                        .form-group
+                          label(for='disabledTextInput') Disabled input
+                          input#disabledTextInput.form-control(type='text', placeholder='Disabled input')
+                        .form-group
+                          label(for='disabledSelect') Disabled select menu
+                          select#disabledSelect.form-control
+                            option Disabled select
+                        .form-check
+                          label.form-check-label
+                            input.form-check-input(type='checkbox')
+                            |  Can't check this
+                        button.btn.btn-primary(type='submit') Submit
+              .masonry-item.col-md-6
+                .bgc-white.p-20.bd
+                  h6.c-grey-900 Validation
+                  .mT-30
+                    form.container#needs-validation(novalidate='')
+                      .row
+                        .col-md-6.mb-3
+                          label(for='validationCustom01') First name
+                          input.form-control#validationCustom01(type='text', placeholder='First name', value='Mark', required='')
+                        .col-md-6.mb-3
+                          label(for='validationCustom02') Last name
+                          input.form-control#validationCustom02(type='text', placeholder='Last name', value='Otto', required='')
+                      .row
+                        .col-md-6.mb-3
+                          label(for='validationCustom03') City
+                          input.form-control#validationCustom03(type='text', placeholder='City', required='')
+                          .invalid-feedback Please provide a valid city.
+                        .col-md-3.mb-3
+                          label(for='validationCustom04') State
+                          input.form-control#validationCustom04(type='text', placeholder='State', required='')
+                          .invalid-feedback Please provide a valid state.
+                        .col-md-3.mb-3
+                          label(for='validationCustom05') Zip
+                          input.form-control#validationCustom05(type='text', placeholder='Zip', required='')
+                          .invalid-feedback Please provide a valid zip.
+                      button.btn.btn-primary(type='submit') Submit form
+                    script ! function () {
+                      "use strict";
+                      window.addEventListener("load", function () {
+                        var e = document.getElementById("needs-validation");
+                        e.addEventListener("submit", function (t) {
+                          !1 === e.checkValidity() && (t.preventDefault(), t.stopPropagation()), e.classList.add(
+                            "was-validated")
+                        }, !1)
+                      }, !1)
+                    }()
+        footer.bdT.ta-c.p-30.lh-0.fsz-sm.c-grey-600
+          span
+            | Copyright © 2017 Designed by
+            a(href='https://colorlib.com', target='_blank', title='Colorlib') Colorlib
+            | . All rights reserved.
+    script(type='text/javascript', src='vendor.js')
+    script(type='text/javascript', src='bundle.js')

@@ -7,6 +7,11 @@ const app = express.Router();
 // Import User Schema
 const User = require('../models/user.js');
 
+// Initialize toggles
+var toggles = require('./toggles.json');
+var featuretoggles = require('feature-toggles');
+featuretoggles.load(toggles);
+
 // Initialize Mongoose
 const mongoose = require('../middlewares/mongoose.js')
 
@@ -55,63 +60,67 @@ console.log('Set up client MIT')
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use('local', new LocalStrategy({
-        usernameField: 'email',
-    },
-    function (username, password, done) {
-        User.findOne({
-            email: username
-        }, function (err, user) {
-            if (err) {
-                return done(err);
-            }
-            if (!user) {
-                console.log('no user')
-                return done(null, false, {
-                    message: 'Incorrect email.'
-                });
-            }
-            user.validPassword(password, (err, isMatch) => {
-                if (!isMatch) {
-                    console.log('invalid password')
-                    return done(null, false, {
-                        message: 'Incorrect password.'
-                    });
-                } else {
-                    console.log('valid login for ' + user.email);
-                    return done(null, user)
+// Configure Local Login if Feature Enabled
+if (featuretoggles.isFeatureEnabled('localLogin')) {
+    passport.use('local', new LocalStrategy({
+            usernameField: 'email',
+        },
+        function (username, password, done) {
+            User.findOne({
+                email: username
+            }, function (err, user) {
+                if (err) {
+                    return done(err);
                 }
+                if (!user) {
+                    console.log('no user')
+                    return done(null, false, {
+                        message: 'Incorrect email.'
+                    });
+                }
+                user.validPassword(password, (err, isMatch) => {
+                    if (!isMatch) {
+                        console.log('invalid password')
+                        return done(null, false, {
+                            message: 'Incorrect password.'
+                        });
+                    } else {
+                        console.log('valid login for ' + user.email);
+                        return done(null, user)
+                    }
+                });
             });
-        });
-    }
-));
-
-const {
-    Strategy
-} = require('openid-client');
-const params = {
-    scope: "email,profile,openid"
+        }
+    ));
 }
 
-passport.use('oidc', new Strategy({
-    client,
-    params
-}, (tokenset, userinfo, done) => {
-    console.log('userinfo', userinfo);
-    if (userinfo.email) {
-        User.findOne({
-            email: userinfo.email
-        }, function (err, user) {
-            if (err) return done(err);
-            return done(null, user);
-        });
-    } else {
-        console.log('Appropriate permissions not given.')
-        return done('Appropriate permissions not given.')
+// Configure MIT Login if Feature enabled
+if (featuretoggles.isFeatureEnabled('mitLogin')) {
+    const {
+        Strategy
+    } = require('openid-client');
+    const params = {
+        scope: "email,profile,openid"
     }
+    passport.use('oidc', new Strategy({
+        client,
+        params
+    }, (tokenset, userinfo, done) => {
+        if (userinfo.email) {
+            User.findOne({
+                email: userinfo.email
+            }, function (err, user) {
+                if (err) return done(err);
+                return done(null, user);
+            });
+        } else {
+            console.log('Appropriate permissions not given.')
+            return done('Appropriate permissions not given.')
+        }
+    }));
+}
 
-}));
-
+// Serialize and Deserialize Passport Sessions
 passport.serializeUser(function (user, done) {
     done(null, user._id);
 });
@@ -131,11 +140,15 @@ app.use(require('./signup'));
 app.use(require('./signin'));
 app.use(require('./settings'));
 app.use(require('./api'));
-app.use(require('./passwordreset'));
 app.use(require('./budgets'));
 app.use(require('./reimbursements'));
 app.use(require('./reports'));
 app.use(require('./roles'));
+
+// Routes only for localLogin
+if (featuretoggles.isFeatureEnabled('localLogin')) {
+    app.use(require('./passwordreset'));
+}
 
 // GET /signout
 app.get('/signout', (req, res) => {

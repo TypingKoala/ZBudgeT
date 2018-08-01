@@ -5,9 +5,11 @@
             form(method="post" action="/roles/create")
                 .form-group
                 label(for='roleName') Role Name
-                input.form-control#password(type='text', name='roleName' placeholder="superadmin")
+                input.form-control(type='text', name='roleName' placeholder="superadmin" aria-describedby="roleNameHelp")
+                small#roleNameHelp.form-text.text-muted This must be unique.
                 .form-group
                 label(for='permissions') Role Permissions
-                input.form-control#newPassword(type='text', name='permissions' placeholder="admin, budget manager")
+                input.form-control(type='text', name='permissions' placeholder="admin, budget manager" aria-describedby="permissionsHelp")
+                small#permissionsHelp.form-text.text-muted Your input should be a list of permissions separated by commas.
                 .form-group
                 button.btn.btn-primary(type='submit') Submit

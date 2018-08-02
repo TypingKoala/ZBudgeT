@@ -99,8 +99,15 @@ if (featuretoggles.isFeatureEnabled('mitLogin')) {
     const {
         Strategy
     } = require('openid-client');
+    // Set up redirect_uri based on Node Environment
+    if (process.env.NODE_ENV === 'production') {
+        var redirect_uri = 'https://zbudget.johnnybui.com/oidc'
+    } else {
+        var redirect_uri = 'http://localhost:3000'
+    }
     const params = {
-        scope: "email,profile,openid"
+        scope: "email,profile,openid",
+        redirect_uri
     }
     passport.use('oidc', new Strategy({
         client,

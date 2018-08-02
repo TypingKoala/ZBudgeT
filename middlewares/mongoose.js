@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
-var mongoaddr = process.env.MONGOADDR;
+if (process.env.NODE_ENV === "production") {
+    mongoaddr = process.env.mongoProd
+} else {
+    mongoaddr= process.env.mongoDev
+}
 
 mongoose.connect(mongoaddr, {
     useNewUrlParser: true
@@ -7,7 +11,7 @@ mongoose.connect(mongoaddr, {
     if (err) {
         console.log(err.message)
     } else {
-        console.log('MongoDB connection successful.')
+        console.log(`MongoDB connection to ${mongoaddr} succeeded.`)
     }
 });
 var db = mongoose.connection;

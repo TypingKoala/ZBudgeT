@@ -2,7 +2,7 @@
 openid.json
 secrets.json
 .env
-zbudget-668592abe4ea.json
+gae_client_secrets.json
 
 # Logs
 logs

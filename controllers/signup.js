@@ -6,7 +6,6 @@ const app = express.Router();
 
 // Initialize Crypto
 const crypto = require('crypto');
-const cipher = crypto.createCipher('aes192', process.env.apiGenSecret);
 
 // Import User Schema
 const User = require('../models/user.js');
@@ -28,13 +27,14 @@ if (featuretoggles.isFeatureEnabled('signup')) {
     app.post('/signup', (req, res, next) => {
         if (req.body.name && req.body.email && req.body.password && req.body.confirmPassword) {
             if (req.body.password == req.body.confirmPassword) {
-                let encryptedKey = cipher.update(req.body.email, 'utf8', 'hex');
-                encryptedKey += cipher.final('hex');
+                // Generate API Key
+                const apiBuf = crypto.randomBytes(32);
+                const apiKey = apiBuf.toString('hex');
                 var newUserData = {
                     name: req.body.name,
                     email: req.body.email,
                     password: req.body.password,
-                    apiKey: encryptedKey
+                    apiKey
                 };
                 User.create(newUserData, (err, user) => {
                     if (err) {

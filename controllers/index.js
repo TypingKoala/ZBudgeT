@@ -19,6 +19,13 @@ const mongoose = require('../middlewares/mongoose.js')
 const flash = require('express-flash');
 app.use(flash());
 
+// Use Body Parser
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
+
 // Require and Initialize Sessions & MongoStore
 var session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
@@ -34,6 +41,9 @@ app.use(session({
     })
 
 }));
+
+// Initialize Crypto
+const crypto = require('crypto');
 
 // Initialize Passport.js
 var passport = require('passport');
@@ -105,6 +115,7 @@ if (featuretoggles.isFeatureEnabled('mitLogin')) {
     } else {
         var redirect_uri = 'http://localhost:3000/oidc'
     }
+    // Parameters for OIDC
     const params = {
         scope: "email,profile,openid",
         redirect_uri
@@ -113,14 +124,39 @@ if (featuretoggles.isFeatureEnabled('mitLogin')) {
         client,
         params
     }, (tokenset, userinfo, done) => {
+        // Checks if userinfo.email is defined
         if (userinfo.email) {
             User.findOne({
                 email: userinfo.email
             }, function (err, user) {
                 if (err) return done(err);
-                return done(null, user);
+                // If no user, create user and return
+                if (!user) {
+                    // Generate random password
+                    const passwordBuf = crypto.randomBytes(16);
+                    const password = passwordBuf.toString('base64');
+                    // Generate API Key
+                    const apiBuf = crypto.randomBytes(32);
+                    const apiKey = apiBuf.toString('hex');
+                    var newUserData = {
+                        name: userinfo.name,
+                        email: userinfo.email,
+                        password,
+                        apiKey
+                    };
+                    User.create(newUserData, (err, user) => {
+                        if (err) {
+                            done(err);
+                        } else {
+                            return done(null, user)
+                        }
+                    });
+                } else {
+                    return done(null, user);
+                }
             });
         } else {
+            // If userinfo.email is not defined, then user has not given appropriate permissions
             console.log('Appropriate permissions not given.')
             return done('Appropriate permissions not given.')
         }
@@ -148,7 +184,7 @@ app.use(require('./signin'));
 app.use(require('./settings'));
 app.use(require('./api'));
 app.use(require('./budgets'));
-app.use(require('./reimbursements'));
+app.use(require('./spending'));
 app.use(require('./reports'));
 app.use(require('./roles'));
 

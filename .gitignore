@@ -1,8 +1,7 @@
 # Sensitive resources
 openid.json
-secrets.json
 .env
-gae_client_secrets.json
+app.yaml
 
 # Logs
 logs

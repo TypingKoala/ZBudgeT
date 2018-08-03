@@ -1,8 +1,12 @@
+// Start dotenv
+const dotenv = require('dotenv')
+const result = dotenv.config()
+if (result.error) {
+  throw result.error
+}
+
 // Variables
 const port = process.env.PORT || 3000
-
-// Start dotenv
-require('dotenv').config();
 
 // Initialize express
 const express = require('express');

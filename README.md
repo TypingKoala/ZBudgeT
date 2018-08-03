@@ -6,7 +6,14 @@ ZBudget was made to help facilitate budget and reimbursement management for the 
     - [Table of Contents](#table-of-contents)
     - [Get Started](#get-started)
     - [Developer Documentation](#developer-documentation)
-        - [Structure](#structure)
+        - [Root Project Structure (*./*)](#root-project-structure)
+        - [Controllers Folder (*./controllers*)](#controllers-folder-controllers)
+        - [Middlewares Folder (*./middlewares*)](#middlewares-folder-middlewares)
+        - [Models Folder (*./models*)](#models-folder-models)
+        - [Public Folder (*./public*)](#public-folder-public)
+        - [Resources Folder (*./resources*)](#resources-folder-resources)
+        - [Test Folder (*./test*)](#test-folder-test)
+        - [Views Folder (*./views*)](#views-folder-views)
 
 ## Get Started
 1. Clone the repo from Github:
@@ -57,11 +64,11 @@ npm start
 - For production use, consider using [forever](https://github.com/foreverjs/forever).
 
 ## Developer Documentation
-Below, I will outline the core functions and the project structure.
-### Structure
+If you will be using this project for your own purposes, you will need to make some changes to the code. I have outlined below the purpose of each file in the code.
+
+### Root Project Structure (*./*)
 ```
 ├── app.js
-├── app.yaml
 ├── controllers
 ├── LICENSE.md
 ├── middlewares
@@ -76,5 +83,55 @@ Below, I will outline the core functions and the project structure.
 ```
 - **app.js**: the main NodeJS file of the project
     - Contains server port number, ExpressJS initialization, render engine (Pug) initialization, connecting the 'controllers' router, and starting the server
-- **
+- **[controllers](#controllers-folder-controllers)**: folder for application functionality
+- **LICENSE<span></span>.md]**: MIT License file
+- **[middlewares](#middlewares-folder-middlewares)**: folder for ExpressJS middleware
+- **[models](#models-folder-models)**: folder for MongoDB models
+- **package-lock.json & package.json**: npm package files
+- **[public](#public-folder-public)**: folder for public assets
+- **README<span></span>.md**: the documentation you are currently reading
+- **[resources](#resources-folder-resources)**: folder for general application templates/resources
+- **[test](#test-folder-test)**: folder for tests
+- **[views](#views-folder-views)**: folder for Pug templates
+
+### Controllers Folder (*./controllers*)
+This folder contains Javascript files that control the application's functionality. 
+```
+├── api.js
+├── budgets.js
+├── home.js
+├── index.js
+├── passwordreset.js
+├── reports.js
+├── roles.js
+├── settings.js
+├── signin.js
+├── signup.js
+├── spending.js
+└── toggles.json
+```
+- **index.js**: contains the main application Router and Passport.js functionality
+    - Initializes Mongoose from the middlewares folder
+    - Initializes feature-toggles
+    - Initializes express-flash
+    - Initializes body-parser
+    - Initializes express-session and MongoStore
+    - Initializes Passport.js with LocalStrategy and OpenID Connect (OIDC) Strategy based on Feature Toggles
+    - Initializes Passport.js seralizeUser and deseralizeUser methods
+    - Starts Static Server in folder "./public"
+    - Routes traffic to other controllers
+    - Implements '/signout' functionality with Passport.js
+    - Catches 404 and 500 errors
+
+### Middlewares Folder (*./middlewares*)
+
+### Models Folder (*./models*)
+
+### Public Folder (*./public*)
+
+### Resources Folder (*./resources*)
+
+### Test Folder (*./test*)
+
+### Views Folder (*./views*)
 

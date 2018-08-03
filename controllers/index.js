@@ -47,24 +47,6 @@ const crypto = require('crypto');
 
 // Initialize Passport.js
 var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-const {
-    Issuer
-} = require('openid-client');
-const mitIssuer = new Issuer({
-    issuer: 'https://oidc.mit.edu/',
-    authorization_endpoint: 'https://oidc.mit.edu/authorize',
-    token_endpoint: 'https://oidc.mit.edu/token',
-    userinfo_endpoint: 'https://oidc.mit.edu/userinfo',
-    jwks_uri: 'https://oidc.mit.edu/jwk',
-}); // => Issuer
-console.log('Set up issuer MIT');
-const client = new mitIssuer.Client({
-    client_id: process.env.oidc_client_id,
-    client_secret: process.env.oidc_client_secret
-});
-console.log('Set up client MIT')
-
 
 // Configure Passport
 app.use(passport.initialize());
@@ -72,6 +54,7 @@ app.use(passport.session());
 
 // Configure Local Login if Feature Enabled
 if (featuretoggles.isFeatureEnabled('localLogin')) {
+    var LocalStrategy = require('passport-local').Strategy;
     passport.use('local', new LocalStrategy({
             usernameField: 'email',
         },
@@ -106,6 +89,22 @@ if (featuretoggles.isFeatureEnabled('localLogin')) {
 
 // Configure MIT Login if Feature enabled
 if (featuretoggles.isFeatureEnabled('mitLogin')) {
+    const {
+        Issuer
+    } = require('openid-client');
+    const mitIssuer = new Issuer({
+        issuer: 'https://oidc.mit.edu/',
+        authorization_endpoint: 'https://oidc.mit.edu/authorize',
+        token_endpoint: 'https://oidc.mit.edu/token',
+        userinfo_endpoint: 'https://oidc.mit.edu/userinfo',
+        jwks_uri: 'https://oidc.mit.edu/jwk',
+    }); // => Issuer
+    console.log('Set up issuer MIT');
+    const client = new mitIssuer.Client({
+        client_id: process.env.oidc_client_id,
+        client_secret: process.env.oidc_client_secret
+    });
+    console.log('Set up client MIT')
     const {
         Strategy
     } = require('openid-client');
@@ -161,6 +160,22 @@ if (featuretoggles.isFeatureEnabled('mitLogin')) {
             return done('Appropriate permissions not given.')
         }
     }));
+};
+
+// Configure API Login if feature toggle enabled
+if (featuretoggles.isFeatureEnabled('apiLogin')) {
+    var HeaderAPIKeyStrategy = require('passport-headerapikey').HeaderAPIKeyStrategy;
+    passport.use(new HeaderAPIKeyStrategy(
+        { header: 'Authorization', prefix: 'Api-Key ' },
+        false,
+        function(apikey, done) {
+          User.findOne({ apiKey: apikey }, function (err, user) {
+            if (err) { return done(err); }
+            if (!user) { return done(null, false); }
+            return done(null, user);
+          });
+        }
+      ));
 }
 
 // Serialize and Deserialize Passport Sessions
@@ -182,7 +197,7 @@ app.use(require('./home'))
 app.use(require('./signup'));
 app.use(require('./signin'));
 app.use(require('./settings'));
-app.use(require('./api'));
+app.use('/api', require('./api'));
 app.use(require('./budgets'));
 app.use(require('./spending'));
 app.use(require('./reports'));

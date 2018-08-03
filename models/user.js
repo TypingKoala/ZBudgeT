@@ -47,6 +47,8 @@ UserSchema.pre('save', function (next) {
             user.emailMD5 = md5(user.email);
             next();
         })
+    } else {
+        next();
     }
 
 });

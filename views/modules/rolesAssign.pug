@@ -16,12 +16,12 @@
                         th Assigned Roles
                         th Edit Roles
                 tbody
-                    for user in users
+                    for eachuser in users
                         tr
-                            td #{user.name}
-                            td #{user.email}
-                            td #{user.roles}
+                            td #{eachuser.name}
+                            td #{eachuser.email}
+                            td #{eachuser.roles}
                             td 
                                 form(action=`/roles` method='get')
-                                    input(type="hidden" name="uid" value=`${user._id}`)
+                                    input(type="hidden" name="uid" value=`${eachuser._id}`)
                                     button.btn.btn-primary Edit Roles

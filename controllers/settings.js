@@ -4,9 +4,6 @@ const express = require('express');
 // Intitialize App
 const app = express.Router();
 
-// Require MD5 (for avatars)
-const md5 = require('md5');
-
 // Require User Model
 const User = require('../models/user');
 
@@ -21,10 +18,7 @@ app.get('/settings', (req, res) => {
     if (req.user) {
         res.render('settings', {
             title: 'Settings',
-            name: req.user.name,
-            roles: req.user.roles,
-            avatarMD5: md5(req.user.email),
-            apiKey: req.user.apiKey,
+            user: req.user,
             localLoginEnabled: featuretoggles.isFeatureEnabled('localLogin'),
             success: req.flash('success')[0],
             failure: req.flash('failure')[0]

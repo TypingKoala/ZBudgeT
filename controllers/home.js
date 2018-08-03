@@ -16,10 +16,8 @@ app.get('/', (req, res, next) => {
         User.find({}, (err, users) => {
             res.render('rolesAdmin', {
                 title: 'Home',
-                name: req.user.name,
-                roles: req.user.roles,
-                avatarMD5: md5(req.user.email),
-                users: users
+                user: req.user,
+                users
             });
         });
     } else {

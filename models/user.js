@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const md5 = require('md5');
 
 var UserSchema = new mongoose.Schema({
     name: {
@@ -9,6 +10,10 @@ var UserSchema = new mongoose.Schema({
     email: {
         type: String,
         trim: true,
+        unique: true
+    },
+    emailMD5: {
+        type: String,
         unique: true
     },
     password: {
@@ -36,9 +41,10 @@ UserSchema.pre('save', function (next) {
         // hash password with salt
         bcrypt.hash(user.password, 10, function (err, hash) {
             if (err) return next(err);
-
             // rewrite password as hashed password
             user.password = hash;
+            // Set emailMD5 using user.email and md5 function
+            user.emailMD5 = md5(user.email);
             next();
         })
     }

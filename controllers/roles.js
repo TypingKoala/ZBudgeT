@@ -1,10 +1,6 @@
 const express = require('express');
 const app = express.Router();
 
-
-// Require MD5 (for avatars)
-const md5 = require('md5');
-
 // Import Schemas
 const User = require('../models/user.js');
 const Role = require('../models/roles');
@@ -26,10 +22,9 @@ app.get('/roles', (req, res) => {
                     });
                     if (err) return next(err)
                     // Render rolesEdit page
+                    // Note that "user" here is the requested user, not the logged in user
                     res.render('rolesEdit', {
                         title: 'Roles',
-                        name: req.user.name,
-                        avatarMD5: md5(req.user.email),
                         user,
                         rolesActive,
                         allRoles: allRoles
@@ -41,8 +36,7 @@ app.get('/roles', (req, res) => {
             User.find({}, (err, users) => {
                 res.render('rolesAdmin', {
                     title: 'Roles',
-                    name: req.user.name,
-                    avatarMD5: md5(req.user.email),
+                    user: req.user,
                     users: users
                 });
             });
@@ -50,14 +44,6 @@ app.get('/roles', (req, res) => {
     } else {
         console.log('redirecting to signin')
         res.redirect('/signin');
-    }
-});
-
-app.get('/rolesEdit', (req, res, next) => {
-    if (req.user) {
-
-    } else {
-        res.redirect('/signin')
     }
 });
 

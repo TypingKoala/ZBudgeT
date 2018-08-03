@@ -75,5 +75,6 @@ Below, I will outline the core functions and the project structure.
 └── views
 ```
 - **app.js**: the main NodeJS file of the project
-    - Contains server port number, ExpressJS initialization, Body Parser Initialization
+    - Contains server port number, ExpressJS initialization, render engine (Pug) initialization, connecting the 'controllers' router, and starting the server
+- **
 

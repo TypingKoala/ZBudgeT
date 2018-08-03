@@ -12,7 +12,6 @@ const app = express();
 const pug = require('pug');
 app.set('view engine', 'pug');
 
-
 // Initialize routes
 const routes = require('./controllers');
 app.use(routes);

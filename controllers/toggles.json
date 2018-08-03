@@ -1,5 +1,6 @@
 {
     "localLogin": false,
-    "mitLogin": true
+    "mitLogin": true,
+    "signup": false
 
 }

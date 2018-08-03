@@ -103,7 +103,7 @@ if (featuretoggles.isFeatureEnabled('mitLogin')) {
     if (process.env.NODE_ENV === 'production') {
         var redirect_uri = 'https://zbudget.johnnybui.com/oidc'
     } else {
-        var redirect_uri = 'http://localhost:3000'
+        var redirect_uri = 'http://localhost:3000/oidc'
     }
     const params = {
         scope: "email,profile,openid",

@@ -42,10 +42,14 @@ if (featuretoggles.isFeatureEnabled('mitLogin')) {
 
     // oidc authentication callback
     app.get('/oidc', passport.authenticate('oidc', {
-        successRedirect: '/',
         failureRedirect: '/signin',
         failureFlash: 'Authentication failed.'
-    }));
+    }), (req, res) => {
+        // Wait until session saves before redirecting
+        req.session.save(() => {
+            res.redirect('/')
+        })
+    });
 }
 
 function verifyRecaptcha(req, res, next) {

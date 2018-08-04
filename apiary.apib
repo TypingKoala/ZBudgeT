@@ -19,7 +19,7 @@ You can check whether authentication was successful by requesting the user infor
     
                 Authorization: Api-Key <YOUR API KEY>
 
-+ Response 200 (application/json)
++ Response 200 (application/json; charset=utf-8')
     
     + Body
 
@@ -42,13 +42,13 @@ With appropriate permissions, list and edit your roles.
 
 You can list the roles that are currently active on your account.
 
-+ Request (application/json)
++ Request (application/json')
 
     + Headers
             
             Authorization: Api-Key <YOUR API KEY>
 
-+ Response 200 (application/json)
++ Response 200 (application/json; charset=utf-8')
 
     + Body
 
@@ -76,7 +76,7 @@ You can add roles if you have the *roles.edit* permission.
                 "newRoles": ["committee-manager", "committee-member"]
             }
             
-+ Response 200 (application/json)
++ Response 200 (application/json; charset=utf-8')
 
     + Body
         

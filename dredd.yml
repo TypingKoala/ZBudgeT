@@ -3,7 +3,7 @@ custom:
   apiaryApiKey: b04b46a818a3e1a8fe32278614757a74
   apiaryApiName: zbudget
 dry-run: null
-hookfiles: null
+hookfiles: ./apiary-hooks.js
 language: nodejs
 sandbox: false
 server: node app.js

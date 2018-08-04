@@ -4,3 +4,21 @@
         .mT-30
             p Your API Key is:
             kbd #{user.apiKey}
+            br
+            br
+            button.btn.btn-danger(data-toggle="modal" data-target="#regenerateAPIKey") Revoke and regenerate API Key
+            
+            .modal.fade#regenerateAPIKey(tabindex="-1" role="dialog" aria-labelledby="regenerateAPIKeyLabel" aria-hidden="true")
+                .modal-dialog(role="document")
+                    .modal-content
+                        .modal-header
+                            h5.modal-title#regenerateAPIKeyLabel Are You Sure?
+                            button.close(data-dismiss="modal" type="button" aria-label="Close")
+                                span(aria-hidden="true") &times;
+                        .modal-body
+                            p Your old API key will stop working and you will be given a new API key.
+                        .modal-footer
+                            button.btn.btn-secondary(data-dismiss="modal" type="button") Close
+                            form(action="/regenerateAPIKey")
+                                button.btn.btn-danger Save changes
+                            

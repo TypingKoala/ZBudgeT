@@ -12,7 +12,9 @@ var toggles = require('./toggles.json');
 var featuretoggles = require('feature-toggles');
 featuretoggles.load(toggles);
 
-    
+// Initialize Crypto
+const crypto = require('crypto')
+
 
 app.get('/settings', (req, res) => {
     if (req.user) {
@@ -52,6 +54,21 @@ app.post('/update', (req, res, next) => {
         })
     } else {
         res.send('Not logged in.')
+    }
+});
+
+app.get('/regenerateAPIKey', (req, res, next) => {
+    if (req.user) {
+        // Generate new API Key
+        const apiBuf = crypto.randomBytes(32);
+        const apiKey = apiBuf.toString('hex');
+        req.user.apiKey = apiKey
+        req.user.save((err, user) => {
+            if (err) return next(err);
+            res.redirect('back')
+        })
+    } else {
+        res.redirect('/signin')
     }
 });
 

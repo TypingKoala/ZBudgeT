@@ -4,7 +4,7 @@
   "description": "Web interface to manage the budget of MIT Zeta Beta Tau",
   "main": "app.js",
   "scripts": {
-    "test": "mocha",
+    "test": "dredd --hookfiles=./apiary-hooks.js",
     "deploy": "git push dokku master",
     "start": "node app.js"
   },

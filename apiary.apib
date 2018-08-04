@@ -1,0 +1,93 @@
+FORMAT: 1A
+HOST: http://zbudget.johnnybui.com/api/
+
+# zbudget
+
+ZBudget was made to help facilitate budget and reimbursement management for the MIT Zeta Beta Tau fraternity. It is a web interface built on the Express framework and backed by MongoDB.
+
+## My User Info [/my/userinfo]
+
+Lists all of the user information for a given API user.
+
+### Return My User Information [GET]
+
+You can check whether authentication was successful by requesting the user information associated with your API Key.
+
++ Request
+
+    + Headers
+    
+                Authorization: Api-Key <YOUR API KEY>
+
++ Response 200 (application/json)
+    
+    + Body
+
+            {
+                "status": "200",
+                "statusMessage": "Success",
+                "content": {
+                    "name": "John Doe",
+                    "email": "test@example.com",
+                    "roles": [],
+                    "apiKey": "<YOUR API KEY>"
+                }
+            }
+
+## My Roles [/my/roles]
+
+With appropriate permissions, list and edit your roles.
+
+### List My Roles [GET]
+
+You can list the roles that are currently active on your account.
+
++ Request (application/json)
+
+    + Headers
+            
+            Authorization: Api-Key <YOUR API KEY>
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "status": "200",
+                "statusMessage": "Success",
+                "content": {
+                    "roles": []
+                }
+            }
+
+### Add Roles [PATCH]
+
+You can add roles if you have the *roles.edit* permission.
+
++ Request (application/json)
+
+    + Headers
+    
+            Authorization: Api-Key <YOUR API KEY>
+            
+    + Body
+    
+            {
+                "newRoles": ["committee-manager", "committee-member"]
+            }
+            
++ Response 200 (application/json)
+
+    + Body
+        
+            {
+                "status": "200",
+                "statusMessage": "Success",
+                "content": {
+                    "roles": [
+                        "admin",
+                        "committee-manager",
+                        "committee-member"
+                    ]
+                }
+            }

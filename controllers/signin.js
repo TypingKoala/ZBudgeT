@@ -47,7 +47,7 @@ if (featuretoggles.isFeatureEnabled('mitLogin')) {
     }), (req, res) => {
         // Wait until session saves before redirecting
         req.session.save(() => {
-            res.redirect('/')
+            res.redirect('/');
         })
     });
 }

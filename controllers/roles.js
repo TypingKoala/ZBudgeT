@@ -11,8 +11,10 @@ app.get('/roles', (req, res) => {
         if (req.query.uid) {
             // Find user that was requested
             User.findById(req.query.uid, (err, user) => {
-                if (err) return next(err)
+                if (err) return next(err);
+
                 Role.find({}, (err, allRoles) => {
+                    if (err) return next(err);
                     // Create rolesActive in order to pass in dict of whether user has a certain role
                     var rolesActive = {}
                     allRoles.forEach(function(role) {
@@ -20,7 +22,6 @@ app.get('/roles', (req, res) => {
                             return userRole === role.roleName
                         });
                     });
-                    if (err) return next(err)
                     // Render rolesEdit page
                     // Note that "user" here is the requested user, not the logged in user
                     res.render('rolesEdit', {
@@ -46,6 +47,28 @@ app.get('/roles', (req, res) => {
         res.redirect('/signin');
     }
 });
+
+app.get('/roles/edit', (req, res) => {
+    if (req.user) {
+        if (req.query.uid && req.query.roleName) {
+            User.findById(req.query.uid, (err, user) => {
+                if (err) return next(err);
+
+                if (user.roles.includes(req.query.roleName)) {
+                    var index = user.roles.indexOf(req.query.roleName);
+                    user.roles.splice(index, 1)
+                } else {
+                    user.roles.push(req.query.roleName);
+                }
+                user.save();
+                res.redirect('back');
+            });
+    } else {
+        res.redirect('back');
+    }} else {
+        res.redirect('/signin')
+    }
+})
 
 app.post('/roles/create', (req, res) => {
     if (req.user) {

@@ -4,8 +4,14 @@ const express = require('express');
 // Intitialize App
 const app = express.Router();
 
-// Require MD5 (for avatars)
-const md5 = require('md5');
+app.get('/reports', (req, res) => {
+    if (req.user) {
+        res.render('reports', {
+            title: 'Reports',
+            user: req.user
+        })
+    }
+})
 
 
 module.exports = app

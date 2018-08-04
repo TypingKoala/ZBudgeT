@@ -1,0 +1,7 @@
+dependencies:
+  pre:
+    - npm install -g dredd@5.1.11
+    - npm install -g dredd@5.1.11
+test:
+  pre:
+    - dredd

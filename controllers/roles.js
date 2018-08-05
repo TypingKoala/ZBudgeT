@@ -48,7 +48,7 @@ app.get('/roles', (req, res) => {
     }
 });
 
-app.get('/roles/edit', (req, res) => {
+app.get('/roles/edit', (req, res, next) => {
     if (req.user) {
         if (req.query.uid && req.query.roleName) {
             User.findById(req.query.uid, (err, user) => {

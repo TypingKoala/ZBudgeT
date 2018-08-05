@@ -4,6 +4,9 @@ const User = require('../../models/user')
 // Crypto
 const crypto = require('crypto');
 
+// Require Express-csv
+const csv = require('express-csv')
+
 // Initialize toggles
 var toggles = require('../toggles.json');
 var featuretoggles = require('feature-toggles');
@@ -28,8 +31,7 @@ var writeStreamOptions = {
 }
 
 // Promise that returns a link to a generated user report
-
-module.exports = function(req, res) {
+function makepdf(req, res, next) {
     var fonts = {
         Roboto: {
             normal: './controllers/reports/fonts/Roboto-Regular.ttf',
@@ -118,6 +120,7 @@ module.exports = function(req, res) {
 
     // Add users to the report
     User.find({}, (err, allUsers) => {
+        if (err) next(err);
         allUsers.forEach((user) => {
             docDefinition.content[3].text.push(
                 `Name: ${user.name}\n`,
@@ -139,7 +142,7 @@ module.exports = function(req, res) {
         if (!featuretoggles.isFeatureEnabled('reportsUseGoogleCloudStorage')) {
             res.writeHead(200, 'OK', {
                 'Content-type': 'application/pdf'
-            })
+            });
             var pdfDoc = printer.createPdfKitDocument(docDefinition);
             pdfDoc.on('data', (data) => {
                 res.write(data);
@@ -148,4 +151,20 @@ module.exports = function(req, res) {
             pdfDoc.on('end', () => res.end())
         }
     });
-};
+}
+
+function makecsv(req, res, next) {
+    data = [
+        ['Name', 'Email', 'Roles']
+    ]
+    User.find({}, (err, allUsers) => {
+        if (err) next(err);
+        allUsers.forEach((user) => {
+            data.push([user.name, user.email, user.roles])
+        });
+        res.csv(data);
+    });
+}
+
+module.exports.makepdf = makepdf;
+module.exports.makecsv = makecsv;

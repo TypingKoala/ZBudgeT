@@ -230,9 +230,10 @@ app.use(Raven.errorHandler());
 app.use((err, req, res, next) => {
     res.status = err.status || 500;
     console.log(err.message);
+    let sentry_event_id = Raven.lastEventId();
     res.render('error', {
         message: 'Uh oh! Something went wrong!',
-        error: {}
+        error: {sentry_event_id}
     });
 })
 

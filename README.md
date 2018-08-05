@@ -1,4 +1,6 @@
 # ZBudgeT
+[![CircleCI](https://circleci.com/gh/TypingKoala/ZBudgeT.svg?style=svg)](https://circleci.com/gh/TypingKoala/ZBudgeT)
+
 ZBudget was made to help facilitate budget and reimbursement management for the MIT Zeta Beta Tau fraternity. It is a web interface built on the Express framework and backed by MongoDB.
 
 ## Table of Contents

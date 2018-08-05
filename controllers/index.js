@@ -7,6 +7,9 @@ const app = express.Router();
 // Import User Schema
 const User = require('../models/user.js');
 
+// Require Raven
+const Raven = require('Raven');
+
 // Initialize toggles
 var toggles = require('./toggles.json');
 var featuretoggles = require('feature-toggles');
@@ -219,6 +222,9 @@ app.use((req, res, next) => {
     res.status = 404;
     res.redirect('/404.html');
 });
+
+// Have Raven handle errors before Express
+app.use(Raven.errorHandler());
 
 // 500
 app.use((err, req, res, next) => {

@@ -48,6 +48,9 @@ app.use(session({
 // Initialize Crypto
 const crypto = require('crypto');
 
+// Require Roles Permission Middleware
+var checkPermissionMW = require('./roles.js').checkPermissionMW;
+
 // Initialize Passport.js
 var passport = require('passport');
 
@@ -188,6 +191,8 @@ passport.serializeUser(function (user, done) {
 
 passport.deserializeUser(function (id, done) {
     User.findById(id, function (err, user) {
+        user.lastSignedIn = Date.now();
+        user.save();
         done(err, user);
     });
 });
@@ -195,8 +200,11 @@ passport.deserializeUser(function (id, done) {
 // Static Server
 app.use(express.static('public'));
 
+// Check Permissions Middleware
+app.use(checkPermissionMW);
+
 // Routes
-app.use(require('./home'))
+app.use(require('./home'));
 app.use(require('./signup'));
 app.use(require('./signin'));
 app.use(require('./settings'));

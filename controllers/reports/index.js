@@ -16,38 +16,38 @@ var reports = [
         csvUrl: '/reports/userreport.csv',
         pdfUrl: '/reports/userreport.pdf'
     }
-]
+];
 
 app.get('/', (req, res) => {
-    if (req.user) {
+    if (req.user && req.user.permissions['reports.view']) {
         res.render('reports', {
             title: 'Reports',
             user: req.user,
             reports
         });
     } else {
-        res.redirect('/signin')
+        res.redirect('/signin');
     }
 });
 
 app.get('/userreport.pdf', (req, res, next) => {
-    if (req.user) {
-        const userreport = require('./userreport')
+    if (req.user && req.user.permissions['reports.view']) {
+        const userreport = require('./userreport');
         userreport.makepdf(req, res, next);
     } else {
-        res.redirect('/signin')
+        res.redirect('/signin');
     }
 });
 
 app.get('/userreport.csv', (req, res, next) => {
-    if (req.user) {
-        const userreport = require('./userreport')
+    if (req.user && req.user.permissions['reports.view']) {
+        const userreport = require('./userreport');
         userreport.makecsv(req, res, next);
     } else {
-        res.redirect('/signin')
+        res.redirect('/signin');
     }
-})
+});
 
 
 
-module.exports = app
+module.exports = app;

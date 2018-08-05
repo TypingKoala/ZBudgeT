@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha",
-    "deploy": "git push dokku master",
+    "docker": "docker build -t typingkoala/zbudget .",
     "start": "node app.js"
   },
   "author": "Johnny Bui",
@@ -34,6 +34,7 @@
     "passport-local": "^1.0.0",
     "pdfmake": "^0.1.37",
     "pug": "^2.0.3",
+    "raven": "^2.6.3",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {

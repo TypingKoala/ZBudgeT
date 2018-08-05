@@ -203,7 +203,7 @@ app.use(require('./settings'));
 app.use('/api', require('./api'));
 app.use(require('./budgets'));
 app.use(require('./spending'));
-app.use(require('./reports'));
+app.use('/reports', require('./reports'));
 app.use(require('./roles'));
 
 // Routes only for localLogin

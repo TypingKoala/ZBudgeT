@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 // Require Express
 const express = require('express');
 
@@ -16,7 +17,7 @@ var featuretoggles = require('feature-toggles');
 featuretoggles.load(toggles);
 
 // Initialize Mongoose
-const mongoose = require('../middlewares/mongoose.js')
+const mongoose = require('../middlewares/mongoose.js');
 
 // Initialize Express-Flash
 const flash = require('express-flash');
@@ -72,20 +73,20 @@ if (featuretoggles.isFeatureEnabled('localLogin')) {
                     return done(err);
                 }
                 if (!user) {
-                    console.log('no user')
+                    console.log('no user');
                     return done(null, false, {
                         message: 'Incorrect email.'
                     });
                 }
                 user.validPassword(password, (err, isMatch) => {
                     if (!isMatch) {
-                        console.log('invalid password')
+                        console.log('invalid password');
                         return done(null, false, {
                             message: 'Incorrect password.'
                         });
                     } else {
                         console.log('valid login for ' + user.email);
-                        return done(null, user)
+                        return done(null, user);
                     }
                 });
             });
@@ -110,21 +111,21 @@ if (featuretoggles.isFeatureEnabled('mitLogin')) {
         client_id: process.env.oidc_client_id,
         client_secret: process.env.oidc_client_secret
     });
-    console.log('Set up client MIT')
+    console.log('Set up client MIT');
     const {
         Strategy
     } = require('openid-client');
     // Set up redirect_uri based on Node Environment
     if (process.env.NODE_ENV === 'production') {
-        var redirect_uri = 'https://zbudget.johnnybui.com/oidc'
+        var redirect_uri = 'https://zbudget.johnnybui.com/oidc';
     } else {
-        var redirect_uri = 'http://localhost:3000/oidc'
+        var redirect_uri = 'http://localhost:3000/oidc';
     }
     // Parameters for OIDC
     const params = {
         scope: "email,profile,openid",
         redirect_uri
-    }
+    };
     passport.use('oidc', new Strategy({
         client,
         params
@@ -153,7 +154,7 @@ if (featuretoggles.isFeatureEnabled('mitLogin')) {
                         if (err) {
                             done(err);
                         } else {
-                            return done(null, user)
+                            return done(null, user);
                         }
                     });
                 } else {
@@ -162,11 +163,11 @@ if (featuretoggles.isFeatureEnabled('mitLogin')) {
             });
         } else {
             // If userinfo.email is not defined, then user has not given appropriate permissions
-            console.log('Appropriate permissions not given.')
-            return done('Appropriate permissions not given.')
+            console.log('Appropriate permissions not given.');
+            return done('Appropriate permissions not given.');
         }
     }));
-};
+}
 
 // Configure API Login if feature toggle enabled
 if (featuretoggles.isFeatureEnabled('apiLogin')) {
@@ -223,7 +224,7 @@ if (featuretoggles.isFeatureEnabled('localLogin')) {
 app.get('/signout', (req, res) => {
     req.logout();
     res.redirect('/signin');
-})
+});
 
 // 404
 app.use((req, res, next) => {
@@ -238,11 +239,12 @@ app.use(Raven.errorHandler());
 app.use((err, req, res, next) => {
     res.status = err.status || 500;
     console.log(err.message);
-    let sentry_event_id = Raven.lastEventId();
+    let sentry_event_id = res.sentry;
+    console.log(sentry_event_id);
     res.render('error', {
-        message: 'Uh oh! Something went wrong!',
-        error: {sentry_event_id}
+        message: "Uh oh! That wasn't supposed to happen. Don't worry, we've been notified.",
+        sentry_event_id
     });
-})
+});
 
 module.exports = app;

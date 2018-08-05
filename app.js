@@ -1,16 +1,19 @@
+/*jshint esversion: 6 */
+
 // Start dotenv
-const dotenv = require('dotenv')
-const result = dotenv.config()
+const dotenv = require('dotenv');
+const result = dotenv.config();
 if (result.error) {
-  throw result.error
+  throw result.error;
 }
 
 // Configure Raven
 const Raven = require('raven');
-Raven.config(process.env.ravenUrl).install()
+// Only configure if in production
+Raven.config(process.env.ravenUrl).install();
 
 // Variables
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000;
 
 // Initialize express
 const express = require('express');
@@ -29,5 +32,5 @@ app.use(routes);
 
 // Start Server
 app.listen(port, () => {
-    console.log('The magic happens on port ' + port + '.')
-})
+    console.log('The magic happens on port ' + port + '.');
+});

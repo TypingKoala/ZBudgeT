@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 const express = require('express');
 const app = express.Router();
 
@@ -16,10 +18,10 @@ app.get('/roles', (req, res) => {
                 Role.find({}, (err, allRoles) => {
                     if (err) return next(err);
                     // Create rolesActive in order to pass in dict of whether user has a certain role
-                    var rolesActive = {}
+                    var rolesActive = {};
                     allRoles.forEach(function (role) {
                         rolesActive[role.roleName] = user.roles.find(function (userRole) {
-                            return userRole === role.roleName
+                            return userRole === role.roleName;
                         });
                     });
                     // Render rolesEdit page
@@ -30,7 +32,7 @@ app.get('/roles', (req, res) => {
                         rolesActive,
                         allRoles: allRoles
                     });
-                })
+                });
             });
             // Otherwise list all users and roles
         } else {
@@ -43,7 +45,7 @@ app.get('/roles', (req, res) => {
             });
         }
     } else {
-        console.log('redirecting to signin')
+        console.log('redirecting to signin');
         res.redirect('/signin');
     }
 });
@@ -56,7 +58,7 @@ app.get('/roles/edit', (req, res, next) => {
 
                 if (user.roles.includes(req.query.roleName)) {
                     var index = user.roles.indexOf(req.query.roleName);
-                    user.roles.splice(index, 1)
+                    user.roles.splice(index, 1);
                 } else {
                     user.roles.push(req.query.roleName);
                 }
@@ -67,17 +69,17 @@ app.get('/roles/edit', (req, res, next) => {
             res.redirect('back');
         }
     } else {
-        res.redirect('/signin')
+        res.redirect('/signin');
     }
-})
+});
 
 app.post('/roles/create', (req, res) => {
     if (req.user) {
         // form takes in permissions as comma separated, potentially with leading or trailing whitespace
-        var permissionsWS = req.body.permissions.split(',')
-        var permissions = []
+        var permissionsWS = req.body.permissions.split(',');
+        var permissions = [];
         permissionsWS.forEach((element) => {
-            permissions.push(element.trim())
+            permissions.push(element.trim());
         });
         console.log(permissions);
         // variable permissions is now an array of permissions with no leading or trailing whitespace
@@ -87,7 +89,7 @@ app.post('/roles/create', (req, res) => {
         });
         res.redirect('back');
     } else {
-        res.redirect('/signin')
+        res.redirect('/signin');
     }
 });
 
@@ -108,7 +110,7 @@ var checkPermission = function(user, permission) {
             }, (err, role) => {
                 if (role && role.permissions.indexOf(permission) >= 0) {
                     resolve(true);
-                };
+                }
                 remaining --;
                 if (!remaining) {
                     resolve(false);

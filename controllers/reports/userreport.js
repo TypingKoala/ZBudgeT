@@ -24,8 +24,8 @@ const storage = new Storage({
     keyFilename: './zbudget-ea43880fe032.json'
 });
 const zbudgetBucket = storage.bucket('zbudget');
-var name = crypto.randomBytes(16).toString('hex') + '.pdf'
-const file = zbudgetBucket.file(name)
+var name = crypto.randomBytes(16).toString('hex') + '.pdf';
+const file = zbudgetBucket.file(name);
 var writeStreamOptions = {
     gzip: true,
     metadata: {
@@ -34,7 +34,7 @@ var writeStreamOptions = {
         name
     },
     public: true
-}
+};
 
 // Promise that returns a link to a generated user report
 function makepdf(req, res, next) {
@@ -68,7 +68,7 @@ function makepdf(req, res, next) {
             },
             {
                 text: [
-                    // The users are appended here on docDefinition.content[3].text
+                    // The users are appended here on docDefinition.content[4].text
                     // 'Name: John Doe\n',
                     // 'Email: test@example.com\n',
                     // 'Roles: admin, user\n'

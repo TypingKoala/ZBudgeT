@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 // Require Express
 const express = require('express');
 
@@ -8,6 +9,7 @@ const app = express.Router();
 var toggles = require('../toggles.json');
 var featuretoggles = require('feature-toggles');
 featuretoggles.load(toggles);
+
 
 var reports = [
     {

@@ -13,7 +13,8 @@ app.get('/', (req, res) => {
     })
 });
 
-app.use('/my', require('./my'))
+app.use('/my', require('./my'));
+app.use('/user', require('./user'));
 
 // 401 Unauthorized
 app.get('/unauthorized', (req, res) => {

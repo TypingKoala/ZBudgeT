@@ -17,8 +17,8 @@ app.get('/roles', (req, res) => {
                     if (err) return next(err);
                     // Create rolesActive in order to pass in dict of whether user has a certain role
                     var rolesActive = {}
-                    allRoles.forEach(function(role) {
-                        rolesActive[role.roleName] = user.roles.find(function(userRole) {
+                    allRoles.forEach(function (role) {
+                        rolesActive[role.roleName] = user.roles.find(function (userRole) {
                             return userRole === role.roleName
                         });
                     });
@@ -32,7 +32,7 @@ app.get('/roles', (req, res) => {
                     });
                 })
             });
-        // Otherwise list all users and roles
+            // Otherwise list all users and roles
         } else {
             User.find({}, (err, users) => {
                 res.render('rolesAdmin', {
@@ -63,9 +63,10 @@ app.get('/roles/edit', (req, res) => {
                 user.save();
                 res.redirect('back');
             });
+        } else {
+            res.redirect('back');
+        }
     } else {
-        res.redirect('back');
-    }} else {
         res.redirect('/signin')
     }
 })
@@ -88,7 +89,34 @@ app.post('/roles/create', (req, res) => {
     } else {
         res.redirect('/signin')
     }
-})
+});
 
+
+/**
+ * This promise resolves a boolean based on whether the user 
+ * has a given permission
+ * @param {object} user - a Mongoose document representing the user to be checked
+ * @param {string} permission - the permission to check against
+ */
+var checkPermission = function(user, permission) {
+    return new Promise((resolve, reject) => {
+        var Role = require('../models/roles');
+        var remaining = user.roles.length;
+        user.roles.forEach(element => {
+            Role.findOne({
+                roleName: element
+            }, (err, role) => {
+                if (role && role.permissions.indexOf(permission) >= 0) {
+                    resolve(true);
+                };
+                remaining --;
+                if (!remaining) {
+                    resolve(false);
+                }
+            });
+        });
+    });
+};
 
 module.exports = app;
+module.exports.checkPermission = checkPermission;

@@ -132,20 +132,21 @@ function makepdf(req, res, next) {
     User.find({}, (err, allUsers) => {
         if (err) next(err);
         allUsers.forEach((user) => {
-            docDefinition.content[3].text.push(
+            docDefinition.content[4].text.push(
                 `Name: ${user.name}\n`,
                 `Email: ${user.email}\n`,
-                `Roles: ${user.roles.join()}\n`
-            )
+                `Roles: ${user.roles.join()}\n`,
+                `Last signed in: ${dateFormat(user.lastSignedIn, 'shortDate')}\n`
+            );
         });
+        var pdfDoc = printer.createPdfKitDocument(docDefinition);
         // If using GCS, then redirect to publicLink
         if (featuretoggles.isFeatureEnabled('reportsUseGoogleCloudStorage')) {
-            var pdfDoc = printer.createPdfKitDocument(docDefinition);
             pdfDoc.pipe(file.createWriteStream(writeStreamOptions)
                 .on('finish', () => {
-                    var publicLink = 'https://storage.googleapis.com/zbudget/' + name
-                    res.redirect(publicLink)
-                }))
+                    var publicLink = 'https://storage.googleapis.com/zbudget/' + name;
+                    res.redirect(publicLink);
+                }));
             pdfDoc.end();
         }
         // If not using GCS, then write directly to response

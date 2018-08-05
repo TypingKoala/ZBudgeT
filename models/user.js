@@ -33,9 +33,8 @@ var UserSchema = new mongoose.Schema({
     resetToken: {
         type: String
     },
-    oidcSub: {
-        type: String,
-        unique: true
+    lastSignedIn: {
+        type: Date
     }
 });
 

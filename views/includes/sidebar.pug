@@ -35,8 +35,9 @@
                 span.icon-holder
                   i.c-orange-500.ti-layout-list-thumb
                 span.title Roles
-            li.nav-item
-              a.sidebar-link(href='/reports')
-                span.icon-holder
-                  i.c-red-500.ti-files
-                span.title Reports
+            if user.permissions['reports.view']
+              li.nav-item
+                a.sidebar-link(href='/reports')
+                  span.icon-holder
+                    i.c-red-500.ti-files
+                  span.title Reports

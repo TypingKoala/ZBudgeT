@@ -1,11 +1,17 @@
+/*jshint esversion: 6 */
+
 // Initialize User Schema
-const User = require('../../models/user')
+const User = require('../../models/user');
 
 // Crypto
 const crypto = require('crypto');
 
 // Require Express-csv
-const csv = require('express-csv')
+const csv = require('express-csv');
+
+// Require Dateformat
+var dateFormat = require('dateformat');
+var now = new Date();
 
 // Initialize toggles
 var toggles = require('../toggles.json');
@@ -43,11 +49,15 @@ function makepdf(req, res, next) {
     var printer = new pdfmake(fonts);
     var fs = require('fs');
 
-
+    // When editing, ensure that new users are appended to correct index number at docDefinition.content[4].text
     var docDefinition = {
         content: [{
-                text: 'ZBudgeT User Report\n\n',
+                text: 'ZBudgeT User Report\n',
                 style: 'header'
+            },
+            {
+                text: 'Generated on ' + dateFormat(now, 'longDate') + ' at ' + dateFormat(now, 'longTime') + '\n\n',
+                fontSize: 9
             },
             {
                 text: 'This report will print out a list of users that are currently registered on the website.\n\n'
@@ -143,24 +153,24 @@ function makepdf(req, res, next) {
             res.writeHead(200, 'OK', {
                 'Content-type': 'application/pdf'
             });
-            var pdfDoc = printer.createPdfKitDocument(docDefinition);
             pdfDoc.on('data', (data) => {
                 res.write(data);
             });
             pdfDoc.end();
-            pdfDoc.on('end', () => res.end())
+            pdfDoc.on('end', () => res.end());
         }
     });
 }
 
 function makecsv(req, res, next) {
+    var generatedString = 'Generated on ' + dateFormat(now, 'longDate') + ' at ' + dateFormat(now, 'longTime');
     data = [
-        ['Name', 'Email', 'Roles']
-    ]
+        ['Name', 'Email', 'Roles', 'Last Signed In', generatedString]
+    ];
     User.find({}, (err, allUsers) => {
         if (err) next(err);
         allUsers.forEach((user) => {
-            data.push([user.name, user.email, user.roles])
+            data.push([user.name, user.email, user.roles, dateFormat(user.lastSignedIn, 'shortDate')]);
         });
         res.csv(data);
     });

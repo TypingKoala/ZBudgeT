@@ -6,25 +6,29 @@ var UserSchema = new mongoose.Schema({
     name: {
         type: String,
         trim: true,
+        required: 'name is required'
     },
     email: {
         type: String,
         trim: true,
-        unique: true
+        unique: true,
+        required: 'email is required'
     },
     emailMD5: {
         type: String,
         unique: true
     },
     password: {
-        type: String
+        type: String,
+        required: 'password is required'
     },
     roles: {
         type: Array
     },
     apiKey: {
         type: String,
-        unique: true
+        unique: true,
+        required: 'apiKey is required'
     },
     resetToken: {
         type: String

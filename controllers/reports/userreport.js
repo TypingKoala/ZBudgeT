@@ -136,7 +136,7 @@ function makepdf(req, res, next) {
                 `Name: ${user.name}\n`,
                 `Email: ${user.email}\n`,
                 `Roles: ${user.roles.join()}\n`,
-                `Last signed in: ${dateFormat(user.lastSignedIn, 'shortDate')}\n`
+                `Last signed in: ${dateFormat(user.lastSignedIn, 'shortDate')}\n\n`
             );
         });
         var pdfDoc = printer.createPdfKitDocument(docDefinition);

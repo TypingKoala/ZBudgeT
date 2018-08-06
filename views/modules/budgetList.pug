@@ -1,0 +1,28 @@
+.row
+    .col-md-12
+        .bgc-white.bd.bdrs-3.p-20.mB-20
+            h4.c-grey-900.mB-20 List Budget
+            table#dataTable.table.table-striped.table-bordered(cellspacing='0', width='100%')
+                thead
+                    tr
+                        th Budget Name
+                        th Semester
+                        th Amount
+                        th Edit
+                tfoot
+                    tr
+                        th Budget Name
+                        th Semester
+                        th Amount
+                        th Edit
+                tbody
+                    for report in reports
+                        tr
+                            td #{report.name}
+                            td #{report.description}
+                            td 
+                                div.dropdown.show
+                                    a.btn.btn-primary.dropdown-toggle(href="" role="button" data-toggle="dropdown") Select Report
+                                    div.dropdown-menu
+                                        a.dropdown-item(href=`${report.pdfUrl}`) PDF
+                                        a.dropdown-item(href=`${report.csvUrl}`) CSV

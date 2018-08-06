@@ -14,10 +14,9 @@ const User = require('../models/user.js');
 app.get('/', (req, res, next) => {
     if (req.user) {
         User.find({}, (err, users) => {
-            res.render('rolesAdmin', {
+            res.render('home', {
                 title: 'Home',
-                user: req.user,
-                users
+                user: req.user
             });
         });
     } else {

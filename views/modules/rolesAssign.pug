@@ -8,20 +8,23 @@
                         th Name
                         th Email
                         th Assigned Roles
-                        th Edit Roles
+                        if user.permissions['roles.edit']
+                            th Edit Roles
                 tfoot
                     tr
                         th Name
                         th Email
                         th Assigned Roles
-                        th Edit Roles
+                        if user.permissions['roles.edit']
+                            th Edit Roles
                 tbody
                     for eachuser in users
                         tr
                             td #{eachuser.name}
                             td #{eachuser.email}
                             td #{eachuser.roles}
-                            td 
-                                form(action=`/roles` method='get')
-                                    input(type="hidden" name="uid" value=`${eachuser._id}`)
-                                    button.btn.btn-primary Edit Roles
+                            if user.permissions['roles.edit']
+                                td 
+                                    form(action=`/roles` method='get')
+                                        input(type="hidden" name="uid" value=`${eachuser._id}`)
+                                        button.btn.btn-primary Edit Roles

@@ -9,8 +9,8 @@ const Role = require('../models/roles');
 
 app.get('/roles', (req, res) => {
     if (req.user) {
-        // Check if editing specific user
-        if (req.query.uid) {
+        // Check if editing specific user and has permissions to edit
+        if (req.query.uid && req.user.permissions['roles.edit']) {
             // Find user that was requested
             User.findById(req.query.uid, (err, user) => {
                 if (err) return next(err);
@@ -28,21 +28,26 @@ app.get('/roles', (req, res) => {
                     // Note that "user" here is the requested user, not the logged in user
                     res.render('rolesEdit', {
                         title: 'Roles',
-                        user,
+                        user: req.user,
+                        userEdit: user,
                         rolesActive,
                         allRoles: allRoles
                     });
                 });
             });
             // Otherwise list all users and roles
-        } else {
+        } else if (req.user.permissions['roles.view']) {
             User.find({}, (err, users) => {
                 res.render('rolesAdmin', {
                     title: 'Roles',
                     user: req.user,
                     users: users
                 });
-            });
+            })
+        } else {
+            // If there is no roles permission
+            req.flash('error', "You don't have the necessary permissions to access.")
+            res.redirect('/signin')
         }
     } else {
         console.log('redirecting to signin');

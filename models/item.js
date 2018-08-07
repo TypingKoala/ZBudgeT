@@ -14,10 +14,10 @@ var ItemSchema = new mongoose.Schema({
         type: Number
     },
     budget: {
-        type: ObjectId
+        type: String
     },
     date: {
-        type: Date
+        type: String
     },
     reimbursementType: {
         type: String

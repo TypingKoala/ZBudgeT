@@ -127,24 +127,28 @@ var checkPermission = function(user, permission) {
 
 // Express middleware that writes permissions to req.permissions
 var checkPermissionMW = function(req, res, next) {
-    var Role = require('../models/roles');
-    req.user.permissions = {};
-    var remaining = req.user.roles.length;
-    req.user.roles.forEach(element => {
-        Role.findOne({
-            roleName: element
-        }, (err, role) => {
-            if (role && role.permissions) {
-                role.permissions.forEach(permissionName => {
-                    req.user.permissions[permissionName] = true;
-                });
-            }
-            remaining --;
-            if (!remaining) {
-                next();
-            }
+    if (req.user) {
+        var Role = require('../models/roles');
+        req.user.permissions = {};
+        var remaining = req.user.roles.length;
+        req.user.roles.forEach(element => {
+            Role.findOne({
+                roleName: element
+            }, (err, role) => {
+                if (role && role.permissions) {
+                    role.permissions.forEach(permissionName => {
+                        req.user.permissions[permissionName] = true;
+                    });
+                }
+                remaining --;
+                if (!remaining) {
+                    next();
+                }
+            });
         });
-    });
+    } else {
+        next();
+    }   
 };
 
 module.exports = app;

@@ -2,6 +2,8 @@
     .bgc-white.p-20.bd
         h6.c-grey-900 Record an Expense Item
         .mT-30
+            if successMessage
+                .alert.alert-success(role="alert") #{successMessage}
             link(rel="stylesheet" href="https://unpkg.com/filepond/dist/filepond.css")
             link(rel="stylesheet" href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css")
             form(method="post" action="/spending/create")
@@ -20,7 +22,7 @@
                 .input-group.mb-3
                     .input-group-prepend
                         span.input-group-text $
-                    input.form-control(type='text', name='amount' placeholder="27.51" aria-describedby="permissionsHelp" required)
+                    input.form-control(type='text', name='amount' placeholder="27.51" pattern="[-+]?([0-9]*\.[0-9]+|[0-9]+)" aria-describedby="permissionsHelp" required)
                     //small#permissionsHelp.form-text.text-muted How much did it cost?
                 .form-group
                 label(for='budget') What budget item will this draw from?
@@ -29,7 +31,7 @@
                     option(value="House") House
                 .form-group
                 label(for="date") What day did this expense occur?
-                input.form-control#date(type='text' name="date" placeholder="08/05/2018" required)
+                input.form-control#date(type='text' name="date" placeholder="08/05/2018" pattern="^(1[0-2]|0[1-9])/(3[01]|[12][0-9]|0[1-9])/[0-9]{4}$" required)
                 small.form-text.text-muted Date format should be MM/DD/YYYY
                 .invalid-tooltip Please enter a valid date.
                 .form-group
@@ -47,11 +49,22 @@
                 small.form-text.text-muted If the invoice does not include information about the name on the credit card/the last four digits, please attach a screenshot of your bank/credit card statement showing the transaction. Not doing this when you need to will delay your reimbursement.
                 .form-group
                 button.btn.btn-primary(type='submit') Submit
+            script(src='https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.js')
+            script(src='https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js')
             script(src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js")
             script(src="https://unpkg.com/filepond/dist/filepond.js")
             script.
+                FilePond.registerPlugin(
+                    FilePondPluginImageExifOrientation,
+                    FilePondPluginImagePreview,
+                    FilePondPluginFileValidateSize)
                 const inputElement = document.querySelector('input[type="file"]');
                 const pond = FilePond.create( inputElement );
                 FilePond.setOptions({
-                    allowMultiple: true
+                    allowMultiple: true,
+                    server: '/api/upload',
+                    maxFileSize: '10MB',
+                    fileRenameFunction: (file) => {
+                        return `my_new_name${file.extension}`;
+                    }
                 })

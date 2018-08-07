@@ -1,5 +1,5 @@
 const express = require('express');
-// Router added at "/api"
+// Router added at "/api/my"
 const app = express.Router();
 const passport = require('passport')
 

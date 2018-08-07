@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
 
 app.use('/my', require('./my'));
 app.use('/user', require('./user'));
-app.use('/upload', require('./upload'));
+app.use(require('./upload'));
 
 // 401 Unauthorized
 app.get('/unauthorized', (req, res) => {
@@ -37,6 +37,7 @@ app.use((req, res, next) => {
 
 // 500
 app.use((err, req, res, next) => {
+    console.log(err)
     res.status = 500;
     res.json({
         status: '500',

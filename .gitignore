@@ -5,6 +5,9 @@ app.yaml
 .gcloudignore
 zbudget-ea43880fe032.json
 
+# Temp Files
+tmp
+
 # Logs
 logs
 *.log

@@ -17,6 +17,7 @@ var now = new Date();
 var toggles = require('../toggles.json');
 var featuretoggles = require('feature-toggles');
 featuretoggles.load(toggles);
+
 // Set up Google Cloud Storage
 const Storage = require('@google-cloud/storage');
 const storage = new Storage({

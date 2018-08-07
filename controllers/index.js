@@ -10,6 +10,7 @@ const User = require('../models/user.js');
 
 // Require Raven
 const Raven = require('Raven');
+Raven.config('https://e92de8eba7ff4a7e84a0d72e8ff61a8d@sentry.io/1256326').install();
 
 // Initialize toggles
 var toggles = require('./toggles.json');

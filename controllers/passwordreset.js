@@ -53,7 +53,6 @@ app.post('/forgot', recaptcha.middleware.verify, verifyRecaptcha, (req, res) => 
 
 app.get('/reset/:resetToken', (req, res) => {
     var resetToken = req.params.resetToken;
-    console.log(resetToken);
     User.findOne({
         resetToken
     }, (err, user) => {
@@ -61,7 +60,6 @@ app.get('/reset/:resetToken', (req, res) => {
             req.flash('failure', 'This is an invalid password reset token.');
             res.redirect('/forgot');
         } else {
-            console.log('Commencing password reset for user ' + user.email)
             res.render('reset', {
                 resetToken
             });

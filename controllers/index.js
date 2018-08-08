@@ -73,19 +73,16 @@ if (featuretoggles.isFeatureEnabled('localLogin')) {
                     return done(err);
                 }
                 if (!user) {
-                    console.log('no user');
                     return done(null, false, {
                         message: 'Incorrect email.'
                     });
                 }
                 user.validPassword(password, (err, isMatch) => {
                     if (!isMatch) {
-                        console.log('invalid password');
                         return done(null, false, {
                             message: 'Incorrect password.'
                         });
                     } else {
-                        console.log('valid login for ' + user.email);
                         return done(null, user);
                     }
                 });
@@ -251,7 +248,7 @@ app.use((err, req, res, next) => {
     res.status = err.status || 500;
     console.log(err.message);
     let sentry_event_id = res.sentry;
-    console.log(sentry_event_id);
+    console.log('Sentry Event ID: ' + sentry_event_id);
     res.render('error', {
         message: "Uh oh! That wasn't supposed to happen. Don't worry, we've been notified.",
         sentry_event_id

@@ -75,15 +75,12 @@ UserSchema.statics.authenticate = (email, password, cb) => {
         if (!user) {
             var err = new Error('There is no account with that email address.');
             err.status = 401;
-            console.log('No user');
             return cb(err);
         }
         bcrypt.compare(password, user.password, function (err, result) {
             if (result === true) {
-                console.log('Login successful for ' + user.email);
                 return cb(null, user);
             } else {
-                console.log('Incorrect login for ' + user.email);
                 var err = new Error('Incorrect password.')
                 err.status = 401;
                 return cb(err);
@@ -96,10 +93,8 @@ UserSchema.statics.authenticate = (email, password, cb) => {
 UserSchema.statics.validPassword = (user, password, cb) => {
     bcrypt.compare(password, user.password, function (err, result) {
         if (result === true) {
-            console.log('Login successful for ' + user.email);
             return cb(null, user);
         } else {
-            console.log('Incorrect login for ' + user.email);
             var err = new Error('Incorrect password.')
             err.status = 401;
             return cb(err);

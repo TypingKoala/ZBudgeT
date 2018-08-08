@@ -15,14 +15,12 @@ const { body, validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 
 app.get('/spending', authorize.signIn, (req, res) => {
-    var failed = req.flash('failedvalidation');
-    console.log(failed)
     res.render('spending', {
         title: 'Spending',
         user: req.user,
         successMessage: req.flash('success')[0],
         failureMessage: req.flash('failure')[0],
-        failedValidation: failed
+        failedValidation: req.flash('failedvalidation')
     });
 });
 
@@ -84,7 +82,7 @@ app.post('/spending/create', authorize.signIn, [
         zbudgetBucket.upload(path, options, (err, metadata, apiRes) => {
             if (err) throw(err);
             console.log('https://storage.googleapis.com/zbudget/' + metadata.name)
-            cb('https://storage.googleapis.com/zbudget/' + metadata.name)
+            cb('https://storage.googleapis.com/zbudget/' + metadata.name);
         })
     }
 

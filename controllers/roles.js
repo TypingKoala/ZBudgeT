@@ -1,94 +1,84 @@
 /*jshint esversion: 6 */
 const express = require('express');
 const app = express.Router();
-
-// Validation and Sanitation
-const { body, validationResult } = require('express-validator/check');
-const { sanitizeBody } = require('express-validator/filter');
-
-// Import Schemas
+const {
+    body,
+    validationResult
+} = require('express-validator/check');
+const {
+    sanitizeBody
+} = require('express-validator/filter');
 const User = require('../models/user.js');
 const Role = require('../models/roles');
-
 const Raven = require('raven');
+const authorize = require('../middlewares/authorize');
 
-app.get('/roles', (req, res) => {
-    if (req.user) {
-        // Check if editing specific user and has permissions to edit
-        if (req.query.uid && req.user.permissions['roles.edit']) {
-            // Find user that was requested
-            renderUserEditPage(req, res);
-            // Otherwise list all users and roles
-        } else if (req.user.permissions['roles.view']) {
-            renderUserListPage(res, req);
-        } else {
-            // If there is no roles permission
-            req.flash('error', "You don't have the necessary permissions to access this page.");
-            res.redirect('/signin');
-        }
+app.get('/roles', authorize.signIn, (req, res) => {
+    // Check if editing specific user and has permissions to edit
+    if (req.query.uid && req.user.permissions['roles.edit']) {
+        // Find user that was requested
+        renderUserEditPage(req, res);
+        // Otherwise list all users and roles
+    } else if (req.user.permissions['roles.view']) {
+        renderUserListPage(res, req);
     } else {
-        console.log('redirecting to signin');
+        // If there is no roles permission
+        req.flash('error', "You don't have the necessary permissions to access this page.");
         res.redirect('/signin');
     }
 });
 
-app.get('/roles/edit', (req, res, next) => {
-    if (req.user) {
-        if (req.query.uid && req.query.roleName) {
-            User.findById(req.query.uid, (err, user) => {
-                if (err) return next(err);
+app.get('/roles/edit', authorize.signIn, (req, res, next) => {
+    if (req.query.uid && req.query.roleName) {
+        User.findById(req.query.uid, (err, user) => {
+            if (err) return next(err);
 
-                if (user.roles.includes(req.query.roleName)) {
-                    var index = user.roles.indexOf(req.query.roleName);
-                    user.roles.splice(index, 1);
-                } else {
-                    user.roles.push(req.query.roleName);
-                }
-                user.save();
-                res.redirect('back');
-            });
-        } else {
+            if (user.roles.includes(req.query.roleName)) {
+                var index = user.roles.indexOf(req.query.roleName);
+                user.roles.splice(index, 1);
+            } else {
+                user.roles.push(req.query.roleName);
+            }
+            user.save();
             res.redirect('back');
-        }
+        });
     } else {
-        res.redirect('/signin');
+        res.redirect('back');
     }
 });
 
 app.post('/roles/create', [
     body('permissions')
-        .isString()
-        .escape(),
+    .isString()
+    .escape(),
     body('roleName')
-        .isString()
-        .escape()
-        .custom(value => {
-            return Role.findOne({roleName: value}).then(role => {
-                if (role) return Promise.reject('That role name has already been taken.');
-            });
-        })
-], (req, res) => {
-    if (req.user) {
-        // Check if roleName validator failed
-        if (!validationResult(req).isEmpty()) {
-            req.flash('failure', validationResult(req).array()[0].msg);
-            return res.redirect('back');
-        }
-        // form takes in permissions as comma separated, potentially with leading or trailing whitespace
-        var permissionsWS = req.body.permissions.split(',');
-        var permissions = [];
-        permissionsWS.forEach((element) => {
-            permissions.push(element.trim());
+    .isString()
+    .escape()
+    .custom(value => {
+        return Role.findOne({
+            roleName: value
+        }).then(role => {
+            if (role) return Promise.reject('That role name has already been taken.');
         });
-        // variable permissions is now an array of permissions with no leading or trailing whitespace
-        Role.create({
-            roleName: req.body.roleName,
-            permissions
-        }).catch(err => Raven.captureException(err));
-        res.redirect('back');
-    } else {
-        res.redirect('/signin');
+    })
+], authorize.signIn, (req, res) => {
+    // Check if roleName validator failed
+    if (!validationResult(req).isEmpty()) {
+        req.flash('failure', validationResult(req).array()[0].msg);
+        return res.redirect('back');
     }
+    // form takes in permissions as comma separated, potentially with leading or trailing whitespace
+    var permissionsWS = req.body.permissions.split(',');
+    var permissions = [];
+    permissionsWS.forEach((element) => {
+        permissions.push(element.trim());
+    });
+    // variable permissions is now an array of permissions with no leading or trailing whitespace
+    Role.create({
+        roleName: req.body.roleName,
+        permissions
+    }).catch(err => Raven.captureException(err));
+    res.redirect('back');
 });
 
 
@@ -98,7 +88,7 @@ app.post('/roles/create', [
  * @param {object} user - a Mongoose document representing the user to be checked
  * @param {string} permission - the permission to check against
  */
-var checkPermission = function(user, permission) {
+var checkPermission = function (user, permission) {
     return new Promise((resolve, reject) => {
         var Role = require('../models/roles');
         var remaining = user.roles.length;
@@ -109,7 +99,7 @@ var checkPermission = function(user, permission) {
                 if (role && role.permissions.indexOf(permission) >= 0) {
                     resolve(true);
                 }
-                remaining --;
+                remaining--;
                 if (!remaining) {
                     resolve(false);
                 }
@@ -117,9 +107,6 @@ var checkPermission = function(user, permission) {
         });
     });
 };
-
-module.exports = app;
-module.exports.checkPermission = checkPermission;
 
 function renderUserListPage(res, req) {
     User.find({}, (err, users) => {
@@ -161,3 +148,7 @@ function renderUserEditPage(req, res) {
         });
     });
 }
+
+
+module.exports = app;
+module.exports.checkPermission = checkPermission;

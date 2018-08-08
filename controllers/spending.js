@@ -9,11 +9,12 @@ const crypto = require('crypto');
 const rimraf = require('rimraf'); // Deletes non-empty directories
 const Raven = require('raven');
 const sendEmail = require('./sendEmails');
+const authorize = require('../middlewares/authorize');
 
 const { body, validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 
-app.get('/spending', (req, res) => {
+app.get('/spending', authorize.signIn, (req, res) => {
     var failed = req.flash('failedvalidation');
     console.log(failed)
     res.render('spending', {
@@ -25,7 +26,7 @@ app.get('/spending', (req, res) => {
     });
 });
 
-app.post('/spending/create', [
+app.post('/spending/create', authorize.signIn, [
     body('email')
         .isEmail().withMessage('Invaid Email Address')
         .normalizeEmail(),

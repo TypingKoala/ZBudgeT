@@ -10,9 +10,15 @@ const rimraf = require('rimraf'); // Deletes non-empty directories
 const Raven = require('raven');
 const sendEmail = require('./sendEmails');
 const authorize = require('../middlewares/authorize');
+var dateFormat = require('dateformat');
 
-const { body, validationResult } = require('express-validator/check');
-const { sanitizeBody } = require('express-validator/filter');
+const {
+    body,
+    validationResult
+} = require('express-validator/check');
+const {
+    sanitizeBody
+} = require('express-validator/filter');
 
 app.get('/spending', authorize.signIn, (req, res) => {
     res.render('spending', {
@@ -26,36 +32,43 @@ app.get('/spending', authorize.signIn, (req, res) => {
 
 app.post('/spending/create', authorize.signIn, [
     body('email')
-        .isEmail().withMessage('Invaid Email Address')
-        .normalizeEmail(),
+    .isEmail().withMessage('Invaid Email Address')
+    .normalizeEmail(),
     body('name')
-        .not().isEmpty().withMessage('Your name is required')
-        .trim()
-        .escape(),
+    .not().isEmpty().withMessage('Your name is required')
+    .trim()
+    .escape(),
     body('description')
-        .not().isEmpty().withMessage('Description is required')
-        .escape(),
+    .not().isEmpty().withMessage('Description is required')
+    .escape(),
     body('amount')
-        .not().isEmpty().withMessage('Amount is required')
-        .toFloat().withMessage('You entered an invalid amount'),
+    .not().isEmpty().withMessage('Amount is required')
+    .toFloat().withMessage('You entered an invalid amount'),
     body('budget')
-        .not().isEmpty()
-        .escape(),
+    .not().isEmpty()
+    .escape(),
     body('date')
-        .not().isEmpty().withMessage('Date is required')
-        .toDate().withMessage('You entered an invalid date'),
+    .not().isEmpty().withMessage('Date is required')
+    .toDate().withMessage('You entered an invalid date'),
     body('reimbursementType')
-        .not().isEmpty().withMessage('Reimbursement Type is required')
-        .escape(),
+    .not().isEmpty().withMessage('Reimbursement Type is required')
+    .escape(),
     body('attachments')
-        .not().isEmpty().withMessage('Attachments are required. Make sure to wait for the attachments to upload before submitting.')
-        .escape(),
-    sanitizeBody('additionalInfo')
+    .not().isEmpty().withMessage('Attachments are required. Make sure to wait for the attachments to upload before submitting.')
+    .escape(),
+    sanitizeBody('additionalInfo').escape()
 ], (req, res) => {
+    // If validation status failed, flash error message and redirect back
     if (!validationResult(req).isEmpty()) {
         req.flash('failedvalidation', validationResult(req).array());
         return res.redirect('back');
-    };
+    }
+
+    // If only one folderID, put it into an array
+    if (typeof req.body.attachments === 'string') {
+        req.body.attachments = [req.body.attachments];
+    }
+
     // Set up Google Cloud Storage
     const Storage = require('@google-cloud/storage');
     const storage = new Storage({
@@ -70,42 +83,35 @@ app.post('/spending/create', authorize.signIn, [
      * Returns a string with the public link to the file
      * @param {String} folderId
      */
-    function GCSupload(folderId, cb) {
-        var filename = fs.readdirSync(os.tmpdir() + '/zbudget/' + folderId)[0]
-        var path = os.tmpdir() + '/zbudget/' + folderId + '/' + filename;
-        var extension = filename.split('.').pop()
-        var newfilename = crypto.randomBytes(8).toString('hex') + "." + extension
-        options = {
-            destination: `userUploads/${newfilename}`,
-            public: true
-        }
-        zbudgetBucket.upload(path, options, (err, metadata, apiRes) => {
-            if (err) throw(err);
-            console.log('https://storage.googleapis.com/zbudget/' + metadata.name)
-            cb('https://storage.googleapis.com/zbudget/' + metadata.name);
-        })
-    }
 
     // Upload attachments to Google Cloud Storage
-    var getAttachments = new Promise((resolve, reject) => {
-        if (Array.isArray(req.body.attachments)) {
-            attachments = []
-            req.body.attachments.forEach((folderId) => {
-                GCSupload(folderId, (url) => {
-                    attachments.push(url);
-                    if (attachments.length === req.body.attachments) {
-                        resolve(attachments);
-                    }
-                });
+    var getAttachmentsUrl = new Promise((resolve, reject) => {
+        attachments = [];
+        var attachmentLen = req.body.attachments.length;
+        req.body.attachments.forEach((folderId) => {
+            var filename = fs.readdirSync(os.tmpdir() + '/zbudget/' + folderId)[0]
+            var path = os.tmpdir() + '/zbudget/' + folderId + '/' + filename;
+            var extension = filename.split('.').pop()
+            var newfilename = crypto.randomBytes(8).toString('hex') + "." + extension;
+            options = {
+                destination: `userUploads/${newfilename}`,
+                public: true
+            };
+            zbudgetBucket.upload(path, options, (err, metadata, apiRes) => {
+                if (err) reject(err);
+                console.log('https://storage.googleapis.com/zbudget/' + metadata.name);
+                attachments.push('https://storage.googleapis.com/zbudget/' + metadata.name);
+                attachmentLen --;
+                if (attachmentLen === 0) {
+                    resolve(attachments);
+                }
             });
-        } else {
-            GCSupload(req.body.attachments, (url) => {
-                resolve([url]); 
-            });
-            
-        }
+        });
     });
-    getAttachments.then((attachments) => {
+
+    getAttachmentsUrl.then((attachments) => {
+        console.log(attachments);
+        // Save to items
         Item.create({
             name: req.body.name,
             email: req.body.email,
@@ -116,11 +122,44 @@ app.post('/spending/create', authorize.signIn, [
             reimbursementType: req.body.reimbursementType,
             additionalInfo: req.body.additionalInfo,
             attachments
+        }).then(item => {
+            if (!item) {
+                // If error, capture, flash, and return a redirect
+                Raven.captureException(err);
+                req.flash('failure', 'An unknown error occurred saving your request');
+                return res.redirect('back');
+            } else {
+                // Successful
+                // Flash success message
+                req.flash('success', 'Thanks! Your expense was successfully recorded.');
+                // Send confirmation email
+                sendEmail(req.body.email, {
+                    subject: 'Fingers Crossed! Your Reimbursement Request Was Submitted',
+                    title: 'Reimbursement Request',
+                    preheader: 'Your reimbursement was just submitted for review. Your copy of the request is included in this email!',
+                    superheader: 'HI THERE',
+                    header: 'Reimbursement Request Submitted',
+                    paragraph: `Your reimbursement was just submitted for review. Here is a copy for your records. <br />
+                Description: ${req.body.description} <br />
+                Amount: $${req.body.amount.toFixed(2)} <br />
+                Budget: ${req.body.budget} <br />
+                Date: ${dateFormat(req.body.date, 'fullDate')} <br />
+                Reimbursement Type: ${req.body.reimbursementType} <br />
+                Additional Info: ${req.body.additionalInfo} <br /><br />
+                Best,<br />
+                ZBudget Support`
+                });
+                // Redirect back to page
+                res.redirect('back');
+            }
+        }).catch(err => {
+            // If error, capture, flash, and return a redirect
+            Raven.captureException(err);
+            req.flash('failure', 'An unknown error occurred saving your request');
+            return res.redirect('back');
         });
-        
-        if (typeof req.body.attachments === 'string') {
-            req.body.attachments = [req.body.attachments]
-        }
+
+        // Delete folders using rimraf
         req.body.attachments.forEach((fileId) => {
             deleteDir = os.tmpdir() + '/zbudget/' + fileId;
             rimraf(deleteDir, (err) => {
@@ -128,24 +167,6 @@ app.post('/spending/create', authorize.signIn, [
             });
         });
     });
-    req.flash('success', 'Thanks! Your expense was successfully recorded.');
-    sendEmail(req.body.email, {
-        subject: 'Fingers Crossed! Your Reimbursement Request Was Submitted',
-        title: 'Reimbursement Request',
-        preheader: 'Your reimbursement was just submitted for review. Your copy of the request is included in this email!',
-        superheader: 'HI THERE',
-        header: 'Reimbursement Request Submitted',
-        paragraph: `Your reimbursement was just submitted for review. Here is a copy for your records. <br />
-                Description: ${req.body.description} <br />
-                Amount: $${req.body.amount.toFixed(2)} <br />
-                Budget: ${req.body.budget} <br />
-                Date: ${req.body.date} <br />
-                Reimbursement Type: ${req.body.reimbursementType} <br />
-                Additional Info: ${req.body.additionalInfo} <br /><br />
-                Best,<br />
-                ZBudget Support`
-    });
-    res.redirect('back');
 });
 
 module.exports = app;

@@ -17,6 +17,7 @@ app.use('/my', require('./my'));
 app.use('/user', require('./user'));
 app.use(require('./upload'));
 app.use('/permissions', require('./permissions'));
+app.use('/roles', require('./roles'));
 
 // 401 Unauthorized
 app.get('/unauthorized', (req, res) => {
@@ -24,8 +25,8 @@ app.get('/unauthorized', (req, res) => {
     res.json({
         status: '401',
         statusMessage: 'Unauthorized'
-    })
-})
+    });
+});
 
 // 404 Not Found
 app.use((req, res, next) => {

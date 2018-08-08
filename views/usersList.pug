@@ -3,4 +3,33 @@ extends layout
 block mainContent
     .container-fluid
         h4.c-grey-900.mT-10.mB-30 Users
+        script(src="/assets/js/selectize.min.js")
+        link(rel="stylesheet" href="/assets/css/selectize.css")
         include modules/usersList.pug
+        script.
+            var roleOptions;
+            $.ajax({
+                url: '/api/roles/list',
+                type: 'GET',
+                error: function() {
+                    console.log('Roles Fetch Error')
+                },
+                success: function(res) {
+                    roleOptions = res.roles;
+                }
+            })
+            $('.select').selectize({
+                valueField: 'value',
+                labelField: 'value',
+                searchField: 'value',
+                plugins: ['remove_button'],
+                delimiter: ',',
+                persist: false,
+                create: false,
+                preload: true,
+                initComplete: false,
+                load: function (query, callback) {
+                    if (this.initComplete) return null;
+                    callback(roleOptions);
+                }
+            });

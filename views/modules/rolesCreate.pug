@@ -2,10 +2,10 @@
     .bgc-white.p-20.bd
         h6.c-grey-900 Create a New Role
         .mT-30
-            if failureMessage
-                .alert.alert-danger #{failureMessage}
-            script(src="/assets/js/selectize.min.js")
-            link(rel="stylesheet" href="/assets/css/selectize.css")
+            if roleCreateFailure
+                .alert.alert-danger #{roleCreateFailure}
+            if roleCreateSuccess
+                .alert.alert-success #{roleCreateSuccess}
             form(method="post" action="/roles/create")
                 .form-group
                 label(for='roleName') Role Name

@@ -1,30 +1,52 @@
 .row
     .col-md-12
         .bgc-white.bd.bdrs-3.p-20.mB-20
-            h4.c-grey-900.mB-20 List Users
+            h4.c-grey-900.mB-20 Users List 
+            if userEditFailure
+                .alert.alert-danger #{userEditFailure}
+            if userEditSuccess
+                .alert.alert-success #{userEditSuccess}
             table#dataTable.table.table-striped.table-bordered(cellspacing='0', width='100%')
                 thead
                     tr
                         th Name
-                        th Email
-                        th Assigned Roles
-                        if user.permissions['roles.edit']
-                            th Edit Roles
+                        th Email Address
+                        th Roles
                 tfoot
                     tr
                         th Name
-                        th Email
-                        th Assigned Roles
-                        if user.permissions['roles.edit']
-                            th Edit Roles
+                        th Email Address
+                        th Roles
                 tbody
                     for eachuser in users
                         tr
                             td #{eachuser.name}
+                                if (user.permissions['global.users.edit'])
+                                    button.close(data-toggle="modal" type="button" data-target=`#deleteUser${eachuser._id}`)
+                                        span(aria-hidden="true") &times;
+                                    .modal.fade(id=`deleteUser${eachuser._id}` tabindex="-1" role="dialog" aria-hidden="true")
+                                        .modal-dialog(role="document")
+                                            .modal-content
+                                                .modal-header
+                                                    h5.modal-title Are you sure?
+                                                    button.close(data-dismiss="modal" type="button" aria-label="Close")
+                                                        span(aria-hidden="true") &times;
+                                                .modal-body
+                                                    p The user #{eachuser.name} will be deleted permanently. This is irreversible.
+                                                .modal-footer
+                                                    button.btn.btn-secondary(data-dismiss="modal" type="button") Close
+                                                    form(action="/users/delete" method="post")
+                                                        input(type='hidden' name='id' value=`${eachuser._id}`)
+                                                        button.btn.btn-danger Confirm
                             td #{eachuser.email}
-                            td #{eachuser.roles}
-                            if user.permissions['users.edit']
-                                td 
-                                    form(action=`/users` method='get')
-                                        input(type="hidden" name="uid" value=`${eachuser._id}`)
-                                        button.btn.btn-primary Edit Roles
+                            td 
+                                if user.permissions['global.users.edit']
+                                    form.form-inline(action='/users/update' method="post")
+                                        .form-row
+                                            .col-md-10
+                                                input.select.mb-2.mr-sm-2(type='text' name='newRoles' value=`${eachuser.roles}`)
+                                            input(type="hidden" name="id" value=`${eachuser._id}`)
+                                            .col-md-2
+                                                button.btn.btn-primary.mb-2(type='submit') Update Roles
+                                else
+                                    input.select(type='text' value=`${eachuser.permissions}` disabled)

@@ -15,12 +15,19 @@ const authorize = require('../middlewares/authorize');
 
 app.get('/users', authorize.signIn, (req, res) => {
     // Check if editing specific user and has permissions to edit
-    if (req.query.uid && req.user.permissions['users.edit']) {
-        // Find user that was requested
-        renderUserEditPage(req, res);
-        // Otherwise list all users and roles
-    } else if (req.user.permissions['users.view']) {
-        renderUserListPage(res, req);
+    if (req.user.permissions['users.view']) {
+        User.find({}, (err, users) => {
+            Role.find({}, (err, roles) => {
+                res.render('usersList', {
+                    title: 'List Users',
+                    user: req.user,
+                    users,
+                    roles,
+                    userEditSuccess: req.flash('userEditSuccess')[0],
+                    userEditFailure: req.flash('userEditFailure')[0]
+                });
+            });
+        });
     } else {
         // If there is no roles permission
         req.flash('error', "You don't have the necessary permissions to access this page.");
@@ -28,65 +35,62 @@ app.get('/users', authorize.signIn, (req, res) => {
     }
 });
 
-app.get('/users/edit', authorize.signIn, (req, res, next) => {
-    if (req.query.uid && req.query.roleName) {
-        User.findById(req.query.uid, (err, user) => {
-            if (err) return next(err);
-
-            if (user.roles.includes(req.query.roleName)) {
-                var index = user.roles.indexOf(req.query.roleName);
-                user.roles.splice(index, 1);
-            } else {
-                user.roles.push(req.query.roleName);
-            }
-            user.save();
-            res.redirect('back');
-        });
-    } else {
-        res.redirect('back');
+app.post('/users/delete', authorize.signIn, [
+    body('id')
+        .isMongoId().withMessage('Invalid delete ID')
+        .not().isEmpty().withMessage('No ID given')
+], (req, res) => {
+    if (!validationResult(req).isEmpty()) {
+        var firstMessage = validationResult(req).array()[1].msg;
+        req.flash('userEditFailure', firstMessage);
+        return req.redirect('back');
     }
+    User.deleteOne({
+        _id: req.body.id
+    }, (err) => {
+        if (err) return Raven.captureException(err);
+        req.flash('userEditSuccess', 'User deleted successfully!');
+        res.redirect('back');
+    });
 });
 
-function renderUserListPage(res, req) {
-    User.find({}, (err, users) => {
-        Role.find({}, (err, roles) => {
-            res.render('usersList', {
-                title: 'List Users',
-                user: req.user,
-                users,
-                roles
-            });
-        });
-    });
-}
 
-function renderUserEditPage(req, res) {
-    User.findById(req.query.uid, (err, user) => {
-        if (err)
-            return next(err);
-        Role.find({}, (err, allRoles) => {
-            if (err)
-                return next(err);
-            // Create rolesActive in order to pass in dict of whether user has a certain role
-            var rolesActive = {};
-            allRoles.forEach(function (role) {
-                rolesActive[role.roleName] = user.roles.find(function (userRole) {
-                    return userRole === role.roleName;
-                });
-            });
-            // Render usersEdit page
-            // Note that "user" here is the requested user, not the logged in user
-            res.render('usersEdit', {
-                title: 'User Edit',
-                user: req.user,
-                userEdit: user,
-                rolesActive,
-                allRoles: allRoles,
-                failureMessage: req.flash('failure')[0]
-            });
-        });
+app.post('/users/update', authorize.signIn, [
+    body('id')
+        .isMongoId().withMessage('Not a valid MongoID')
+        .not().isEmpty().withMessage('No ID given'),
+    body('newRoles')
+        .isString()
+        .escape()
+], (req, res) => {
+    // Check if userID validator failed
+    if (!validationResult(req).isEmpty()) {
+        req.flash('userEditFailure', validationResult(req).array()[0].msg);
+        return res.redirect('back');
+    }
+    // form takes in permissions as comma separated, potentially with leading or trailing whitespace
+    var rolesWS = req.body.newRoles.split(',');
+    var roles = [];
+    rolesWS.forEach((element) => {
+        roles.push(element.trim());
     });
-}
+    // variable permissions is now an array of permissions with no leading or trailing whitespace
+    User.updateOne({
+        _id: req.body.id
+    }, {
+        roles
+    }).catch(err => {
+        Raven.setContext({
+            action: 'update users',
+            user: req.body.id,
+            newRoles: req.body.newRoles
+        });
+        Raven.captureException(err);
+        req.flash('userEditFailure', 'Unknown error occured when updating.');
+    });
+    req.flash('userEditSuccess', 'User edited successfully!');
+    res.redirect('back');
+});
 
 
 module.exports = app;

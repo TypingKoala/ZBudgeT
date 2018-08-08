@@ -1,7 +1,11 @@
 .row
     .col-md-12
         .bgc-white.bd.bdrs-3.p-20.mB-20
-            h4.c-grey-900.mB-20 Edit Roles
+            h4.c-grey-900.mB-20 Edit 
+            if roleEditFailure
+                .alert.alert-danger #{roleEditFailure}
+            if roleEditSuccess
+                .alert.alert-success #{roleEditSuccess}
             table#dataTable.table.table-striped.table-bordered(cellspacing='0', width='100%')
                 thead
                     tr
@@ -15,28 +19,28 @@
                     for eachrole in roles
                         tr
                             td #{eachrole.roleName}
-                                            button.close(data-toggle="modal" type="button" data-target=`#deleteRole${eachrole._id}`)
-                                                span(aria-hidden="true") &times;
-                                            .modal.fade(id=`deleteRole${eachrole._id}` tabindex="-1" role="dialog" aria-hidden="true")
-                                                .modal-dialog(role="document")
-                                                    .modal-content
-                                                        .modal-header
-                                                            h5.modal-title#regenerateAPIKeyLabel Are you sure?
-                                                            button.close(data-dismiss="modal" type="button" aria-label="Close")
-                                                                span(aria-hidden="true") &times;
-                                                        .modal-body
-                                                            p The role "#{eachrole.roleName}" will be deleted permanently. This is irreversible.
-                                                        .modal-footer
-                                                            button.btn.btn-secondary(data-dismiss="modal" type="button") Close
-                                                            form(action="/roles/delete" method="post")
-                                                                input(type='hidden' name='id' value=`${eachrole._id}`)
-                                                                button.btn.btn-danger Confirm
+                                button.close(data-toggle="modal" type="button" data-target=`#deleteRole${eachrole._id}`)
+                                    span(aria-hidden="true") &times;
+                                .modal.fade(id=`deleteRole${eachrole._id}` tabindex="-1" role="dialog" aria-hidden="true")
+                                    .modal-dialog(role="document")
+                                        .modal-content
+                                            .modal-header
+                                                h5.modal-title#regenerateAPIKeyLabel Are you sure?
+                                                button.close(data-dismiss="modal" type="button" aria-label="Close")
+                                                    span(aria-hidden="true") &times;
+                                            .modal-body
+                                                p The role "#{eachrole.roleName}" will be deleted permanently. This is irreversible.
+                                            .modal-footer
+                                                button.btn.btn-secondary(data-dismiss="modal" type="button") Close
+                                                form(action="/roles/delete" method="post")
+                                                    input(type='hidden' name='id' value=`${eachrole._id}`)
+                                                    button.btn.btn-danger Confirm
                             td 
                                 if user.permissions['roles.edit']
                                     form.form-inline(action='/roles/update' method="post")
                                         .col-md-10
-                                            input.select.mb-2.mr-sm-2(type='text' value=`${eachrole.permissions}`)
-                                        input(type="hidden" name="uid" value=`${eachrole._id}`)
+                                            input.select.mb-2.mr-sm-2(type='text' name='newPermissions' value=`${eachrole.permissions}`)
+                                        input(type="hidden" name="id" value=`${eachrole._id}`)
                                         .col-md-2
                                             button.btn.btn-primary.mb-2(type='submit') Update Permissions
                                 else

@@ -23,8 +23,8 @@ app.get('/roles', (req, res) => {
             renderUserListPage(res, req);
         } else {
             // If there is no roles permission
-            req.flash('error', "You don't have the necessary permissions to access this page.")
-            res.redirect('/signin')
+            req.flash('error', "You don't have the necessary permissions to access this page.");
+            res.redirect('/signin');
         }
     } else {
         console.log('redirecting to signin');
@@ -64,8 +64,8 @@ app.post('/roles/create', [
         .escape()
         .custom(value => {
             return Role.findOne({roleName: value}).then(role => {
-                if (role) return Promise.reject('That role name has already been taken.')
-            })
+                if (role) return Promise.reject('That role name has already been taken.');
+            });
         })
 ], (req, res) => {
     if (req.user) {
@@ -118,35 +118,8 @@ var checkPermission = function(user, permission) {
     });
 };
 
-// Express middleware that writes permissions to req.permissions
-var checkPermissionMW = function(req, res, next) {
-    if (req.user) {
-        var Role = require('../models/roles');
-        req.user.permissions = {};
-        var remaining = req.user.roles.length;
-        req.user.roles.forEach(element => {
-            Role.findOne({
-                roleName: element
-            }, (err, role) => {
-                if (role && role.permissions) {
-                    role.permissions.forEach(permissionName => {
-                        req.user.permissions[permissionName] = true;
-                    });
-                }
-                remaining --;
-                if (!remaining) {
-                    next();
-                }
-            });
-        });
-    } else {
-        next();
-    }   
-};
-
 module.exports = app;
 module.exports.checkPermission = checkPermission;
-module.exports.checkPermissionMW = checkPermissionMW;
 
 function renderUserListPage(res, req) {
     User.find({}, (err, users) => {

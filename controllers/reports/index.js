@@ -10,6 +10,9 @@ var toggles = require('../toggles.json');
 var featuretoggles = require('feature-toggles');
 featuretoggles.load(toggles);
 
+// Require Authorize Middleware
+const authorize = require('../../middlewares/authorize'); 
+
 
 var reports = [
     {
@@ -20,8 +23,8 @@ var reports = [
     }
 ];
 
-app.get('/', (req, res) => {
-    if (req.user && req.user.permissions['reports.view']) {
+app.get('/', authorize.signIn, (req, res) => {
+    if (req.user.permissions['reports.view']) {
         res.render('reports', {
             title: 'Reports',
             user: req.user,
@@ -32,8 +35,8 @@ app.get('/', (req, res) => {
     }
 });
 
-app.get('/userreport.pdf', (req, res, next) => {
-    if (req.user && req.user.permissions['reports.view']) {
+app.get('/userreport.pdf', authorize.signIn, (req, res, next) => {
+    if (req.user.permissions['reports.view']) {
         const userreport = require('./userreport');
         userreport.makepdf(req, res, next);
     } else {
@@ -41,8 +44,8 @@ app.get('/userreport.pdf', (req, res, next) => {
     }
 });
 
-app.get('/userreport.csv', (req, res, next) => {
-    if (req.user && req.user.permissions['reports.view']) {
+app.get('/userreport.csv', authorize.signIn, (req, res, next) => {
+    if (req.user.permissions['reports.view']) {
         const userreport = require('./userreport');
         userreport.makecsv(req, res, next);
     } else {

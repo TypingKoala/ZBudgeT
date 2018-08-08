@@ -1,16 +1,20 @@
 /*jshint esversion: 6 */
-// Require Express
+// Requires
 const express = require('express');
-
-// Intitialize App
 const app = express.Router();
-
-// Import User Schema
+var toggles = require('./toggles.json');
+var featuretoggles = require('feature-toggles');
 const User = require('../models/user.js');
-
-// Require Raven
+const mongoose = require('../middlewares/mongoose.js');
+var session = require('express-session');
+const bodyParser = require('body-parser');
 const Raven = require('Raven');
-// Set User Contect
+const crypto = require('crypto');
+var addPermissions = require('../middlewares/authorize').addPermissions;
+var passport = require('passport');
+
+
+// Set User Context for Raven on Each Load
 app.use((req, res, next) => {
     if (req.user) {
         Raven.setContext({
@@ -24,26 +28,19 @@ app.use((req, res, next) => {
 });
 
 // Initialize toggles
-var toggles = require('./toggles.json');
-var featuretoggles = require('feature-toggles');
 featuretoggles.load(toggles);
-
-// Initialize Mongoose
-const mongoose = require('../middlewares/mongoose.js');
 
 // Initialize Express-Flash
 const flash = require('express-flash');
 app.use(flash());
 
 // Use Body Parser
-const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
 }));
 
 // Require and Initialize Sessions & MongoStore
-var session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 app.use(session({
     secret: process.env.mongoStoreSecret,
@@ -57,15 +54,6 @@ app.use(session({
     })
 
 }));
-
-// Initialize Crypto
-const crypto = require('crypto');
-
-// Require Roles Permission Middleware
-var checkPermissionMW = require('./roles.js').checkPermissionMW;
-
-// Initialize Passport.js
-var passport = require('passport');
 
 // Configure Passport
 app.use(passport.initialize());
@@ -219,11 +207,12 @@ passport.deserializeUser(function (id, done) {
     });
 });
 
+
 // Static Server
 app.use(express.static('public'));
 
 // Check Permissions Middleware
-app.use(checkPermissionMW);
+app.use(addPermissions);
 
 // Routes
 app.use(require('./home'));

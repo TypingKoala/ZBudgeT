@@ -1,4 +1,7 @@
 /*jshint esversion: 6 */
+/*jshint node: true */
+
+'use strict';
 
 // Start dotenv
 const dotenv = require('dotenv');

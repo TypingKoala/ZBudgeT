@@ -1,3 +1,4 @@
+/*jshint esversion:6*/
 var formidable = require('formidable');
 var express = require('express');
 var app = express.Router();
@@ -7,7 +8,6 @@ var bodyParser = require('body-parser');
 var mkdirp = require('mkdirp'); // Makes directories recursively
 var rimraf = require('rimraf'); // Deletes non-empty directories
 var Raven = require('raven'); // Sentry.io Error Handling
-Raven.config('https://e92de8eba7ff4a7e84a0d72e8ff61a8d@sentry.io/1256326').install();
 
 app.use(bodyParser.text());
 
@@ -29,7 +29,7 @@ app.post('/upload', (req, res, next) => {
         form.on('end', () => {
             res.status = 200;
             res.send(fileId.toString());
-        })
+        });
     });
 });
 
@@ -39,7 +39,7 @@ app.delete('/upload', (req, res) => {
     deleteDir = os.tmpdir() + '/zbudget/' + fileId;
     rimraf(deleteDir, (err) => {
         if (err) return Raven.captureException(err);
-        console.log(deleteDir + ' deleted successfully.')
+        console.log(deleteDir + ' deleted successfully.');
     });
 });
 

@@ -8,7 +8,6 @@ const os = require('os');
 const crypto = require('crypto');
 const rimraf = require('rimraf'); // Deletes non-empty directories
 const Raven = require('raven');
-Raven.config('https://e92de8eba7ff4a7e84a0d72e8ff61a8d@sentry.io/1256326').install();
 const sendEmail = require('./sendEmails');
 
 const { body } = require('express-validator/check');

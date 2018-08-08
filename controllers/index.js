@@ -10,7 +10,18 @@ const User = require('../models/user.js');
 
 // Require Raven
 const Raven = require('Raven');
-Raven.config('https://e92de8eba7ff4a7e84a0d72e8ff61a8d@sentry.io/1256326').install();
+// Set User Contect
+app.use((req, res, next) => {
+    if (req.user) {
+        Raven.setContext({
+            user: {
+                email: req.user.email,
+                name: req.user.name
+            }
+        });
+    }
+    next();
+});
 
 // Initialize toggles
 var toggles = require('./toggles.json');
@@ -112,6 +123,7 @@ if (featuretoggles.isFeatureEnabled('mitLogin')) {
         client_id: process.env.oidc_client_id,
         client_secret: process.env.oidc_client_secret
     });
+    client.CLOCK_TOLERANCE = 5; // to allow a 5 second skew
     console.log('Set up client MIT');
     const {
         Strategy
@@ -173,17 +185,25 @@ if (featuretoggles.isFeatureEnabled('mitLogin')) {
 // Configure API Login if feature toggle enabled
 if (featuretoggles.isFeatureEnabled('apiLogin')) {
     var HeaderAPIKeyStrategy = require('passport-headerapikey').HeaderAPIKeyStrategy;
-    passport.use(new HeaderAPIKeyStrategy(
-        { header: 'Authorization', prefix: 'Api-Key ' },
+    passport.use(new HeaderAPIKeyStrategy({
+            header: 'Authorization',
+            prefix: 'Api-Key '
+        },
         false,
-        function(apikey, done) {
-          User.findOne({ apiKey: apikey }, function (err, user) {
-            if (err) { return done(err); }
-            if (!user) { return done(null, false); }
-            return done(null, user);
-          });
+        function (apikey, done) {
+            User.findOne({
+                apiKey: apikey
+            }, function (err, user) {
+                if (err) {
+                    return done(err);
+                }
+                if (!user) {
+                    return done(null, false);
+                }
+                return done(null, user);
+            });
         }
-      ));
+    ));
 }
 
 // Serialize and Deserialize Passport Sessions

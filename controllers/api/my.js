@@ -1,7 +1,8 @@
+/*jshint esversion:6*/
 const express = require('express');
 // Router added at "/api/my"
 const app = express.Router();
-const passport = require('passport')
+const passport = require('passport');
 
 
 app.get('/userinfo', passport.authenticate('headerapikey', {
@@ -18,7 +19,7 @@ app.get('/userinfo', passport.authenticate('headerapikey', {
                 roles: req.user.roles,
                 apiKey: req.user.apiKey
             }
-        })
+        });
     });
 
 
@@ -33,7 +34,7 @@ app.get('/roles', passport.authenticate('headerapikey', {
             content: {
                 roles: req.user.roles
             }
-        })
+        });
     });
 
 app.patch('/roles', passport.authenticate('headerapikey', {
@@ -59,7 +60,7 @@ app.patch('/roles', passport.authenticate('headerapikey', {
             res.json({
                 status: '400',
                 statusMessage: 'Malformed Request'
-            })
+            });
         }
     });
 

@@ -29,7 +29,6 @@ function sendEmail(emailAddress, body) {
         buttonText: body.buttonText,
         buttonLink: body.buttonLink
     });
-    console.log(emailbody);
     var data = {
         from: 'ZBudgeT <support@johnnybui.com>',
         to: emailAddress,

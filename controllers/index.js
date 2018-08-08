@@ -224,6 +224,7 @@ app.use(require('./budgets'));
 app.use(require('./spending'));
 app.use('/reports', require('./reports'));
 app.use(require('./roles'));
+app.use(require('./users'));
 
 // Routes only for localLogin
 if (featuretoggles.isFeatureEnabled('localLogin')) {

@@ -17,10 +17,10 @@ app.get('/roles', authorize.signIn, (req, res) => {
     // Check if editing specific user and has permissions to edit
     if (req.query.uid && req.user.permissions['roles.edit']) {
         // Find user that was requested
-        renderUserEditPage(req, res);
+        renderRolesEdit(req, res);
         // Otherwise list all users and roles
     } else if (req.user.permissions['roles.view']) {
-        renderUserListPage(res, req);
+        renderRolesList(res, req);
     } else {
         // If there is no roles permission
         req.flash('error', "You don't have the necessary permissions to access this page.");
@@ -47,20 +47,36 @@ app.get('/roles/edit', authorize.signIn, (req, res, next) => {
     }
 });
 
+app.post('/roles/delete', authorize.signIn, [
+    body('id')
+        .isMongoId().withMessage('Invalid delete ID')
+        .not().isEmpty().withMessage('No ID given')
+], (req, res, next) => {
+    if (!validationResult(req).isEmpty()) {
+        var firstMessage = validationResult(req).array()[1].msg;
+        console.log(firstMessage);
+        return res.send(firstMessage)
+    }
+    Role.deleteOne({_id: req.body.id}, (err) => {
+        if (err) return Raven.captureException(err);
+        res.redirect('back');
+    });
+}); 
+
 app.post('/roles/create', [
     body('permissions')
-    .isString()
-    .escape(),
+        .isString()
+        .escape(),
     body('roleName')
-    .isString()
-    .escape()
-    .custom(value => {
-        return Role.findOne({
-            roleName: value
-        }).then(role => {
-            if (role) return Promise.reject('That role name has already been taken.');
-        });
-    })
+        .isString()
+        .escape()
+        .custom(value => {
+            return Role.findOne({
+                roleName: value
+            }).then(role => {
+                if (role) return Promise.reject('That role name has already been taken.');
+            });
+        })
 ], authorize.signIn, (req, res) => {
     // Check if roleName validator failed
     if (!validationResult(req).isEmpty()) {
@@ -108,10 +124,10 @@ var checkPermission = function (user, permission) {
     });
 };
 
-function renderUserListPage(res, req) {
+function renderRolesList(res, req) {
     User.find({}, (err, users) => {
         Role.find({}, (err, roles) => {
-            res.render('rolesAdmin', {
+            res.render('rolesList', {
                 title: 'Roles',
                 user: req.user,
                 users,
@@ -121,7 +137,7 @@ function renderUserListPage(res, req) {
     });
 }
 
-function renderUserEditPage(req, res) {
+function renderRolesEdit(req, res) {
     User.findById(req.query.uid, (err, user) => {
         if (err)
             return next(err);

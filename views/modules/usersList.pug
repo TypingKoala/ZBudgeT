@@ -1,7 +1,7 @@
 .row
     .col-md-12
         .bgc-white.bd.bdrs-3.p-20.mB-20
-            h4.c-grey-900.mB-20 Assign Roles
+            h4.c-grey-900.mB-20 List Users
             table#dataTable.table.table-striped.table-bordered(cellspacing='0', width='100%')
                 thead
                     tr
@@ -23,8 +23,8 @@
                             td #{eachuser.name}
                             td #{eachuser.email}
                             td #{eachuser.roles}
-                            if user.permissions['roles.edit']
+                            if user.permissions['users.edit']
                                 td 
-                                    form(action=`/roles` method='get')
+                                    form(action=`/users` method='get')
                                         input(type="hidden" name="uid" value=`${eachuser._id}`)
                                         button.btn.btn-primary Edit Roles

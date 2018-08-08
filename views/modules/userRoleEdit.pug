@@ -5,6 +5,6 @@
             .list-group
                 for role in allRoles
                     if rolesActive[role.roleName]
-                        a.list-group-item.list-group-item-action.active(href=`/roles/edit?uid=${userEdit._id}&roleName=${role.roleName}`) #{role.roleName}
+                        a.list-group-item.list-group-item-action.active(href=`/users/edit?uid=${userEdit._id}&roleName=${role.roleName}`) #{role.roleName} (active)
                     else
-                        a.list-group-item.list-group-item-action(href=`/roles/edit?uid=${userEdit._id}&roleName=${role.roleName}`) #{role.roleName}
+                        a.list-group-item.list-group-item-action(href=`/users/edit?uid=${userEdit._id}&roleName=${role.roleName}`) #{role.roleName} (inactive)

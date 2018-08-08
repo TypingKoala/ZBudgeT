@@ -1,0 +1,34 @@
+extends layout
+
+block mainContent
+    .container-fluid
+        h4.c-grey-900.mT-10.mB-30 Roles
+        include modules/rolesList.pug
+        include modules/rolesCreate.pug
+        script.
+            var permissionOptions;
+            $.ajax({
+                url: '/api/permissions/list',
+                type: 'GET',
+                error: function() {
+                    console.log('Permissions Fetch Error')
+                },
+                success: function(res) {
+                    permissionOptions = res.permissions;
+                }
+            })
+            $('.select').selectize({
+                valueField: 'value',
+                labelField: 'value',
+                searchField: 'value',
+                plugins: ['remove_button'],
+                delimiter: ',',
+                persist: false,
+                create: false,
+                preload: true,
+                initComplete: false,
+                load: function (query, callback) {
+                    if (this.initComplete) return null;
+                    callback(permissionOptions);
+                }
+            });

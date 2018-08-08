@@ -1,0 +1,7 @@
+.masonry-item.col-md-6
+    .bgc-white.p-20.bd
+        h6.c-grey-900 Roles Assigned to You
+        .mT-30
+            .list-group
+                for role in user.roles
+                    a.list-group-item.list-group-item-action #{role}

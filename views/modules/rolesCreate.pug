@@ -4,6 +4,8 @@
         .mT-30
             if failureMessage
                 .alert.alert-danger #{failureMessage}
+            script(src="/assets/js/selectize.min.js")
+            link(rel="stylesheet" href="/assets/css/selectize.css")
             form(method="post" action="/roles/create")
                 .form-group
                 label(for='roleName') Role Name
@@ -11,7 +13,8 @@
                 small#roleNameHelp.form-text.text-muted This must be unique.
                 .form-group
                 label(for='permissions') Role Permissions
-                input.form-control(type='text', name='permissions' placeholder="house.items.edit, house.items.view" aria-describedby="permissionsHelp" required)
-                small#permissionsHelp.form-text.text-muted Your input should be a list of permissions separated by commas.
+                input.select(type='text', name='permissions' aria-describedby="permissionsHelp" required)
                 .form-group
                 button.btn.btn-primary(type='submit') Submit
+
+            

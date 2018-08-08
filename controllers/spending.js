@@ -9,30 +9,55 @@ const crypto = require('crypto');
 const rimraf = require('rimraf'); // Deletes non-empty directories
 const Raven = require('raven');
 const sendEmail = require('./sendEmails');
+var xssFilters = require('xss-filters');
 
-const { body } = require('express-validator/check');
+const { body, validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 
 app.get('/spending', (req, res) => {
+    var failed = req.flash('failedvalidation');
+    console.log(failed)
     res.render('spending', {
         title: 'Spending',
         user: req.user,
         successMessage: req.flash('success')[0],
-        failureMessage: req.flash('failed')[0]
+        failureMessage: req.flash('failure')[0],
+        failedValidation: failed
     });
 });
 
-function validateRequiredFields(req, res, next) {
-    if (req.body.name && req.body.email && req.body.description && req.body.amount
-        && req.body.budget && req.body.date && req.body.reimbursementType && req.body.attachments.length > 0) {
-            body('email').isEmail().normalizeEmail();
-        } else {
-            req.flash('failure', 'Not all form fields were filled out, or upload did not complete');
-            req.redirect('back');
-        }
-}
-
-app.post('/spending/create', validateRequiredFields, (req, res) => {
+app.post('/spending/create', [
+    body('email')
+        .isEmail().withMessage('Invaid Email Address')
+        .normalizeEmail(),
+    body('name')
+        .not().isEmpty().withMessage('Your name is required')
+        .trim()
+        .escape(),
+    body('description')
+        .not().isEmpty().withMessage('Description is required')
+        .escape(),
+    body('amount')
+        .not().isEmpty().withMessage('Amount is required')
+        .toFloat().withMessage('You entered an invalid amount'),
+    body('budget')
+        .not().isEmpty()
+        .escape(),
+    body('date')
+        .not().isEmpty().withMessage('Date is required')
+        .toDate().withMessage('You entered an invalid date'),
+    body('reimbursementType')
+        .not().isEmpty().withMessage('Reimbursement Type is required')
+        .escape(),
+    body('attachments')
+        .not().isEmpty().withMessage('Attachments are required. Make sure to wait for the attachments to upload before submitting.')
+        .escape(),
+    sanitizeBody('additionalInfo')
+], (req, res) => {
+    if (!validationResult(req).isEmpty()) {
+        req.flash('failedvalidation', validationResult(req).array());
+        return res.redirect('back');
+    };
     // Set up Google Cloud Storage
     const Storage = require('@google-cloud/storage');
     const storage = new Storage({
@@ -107,20 +132,18 @@ app.post('/spending/create', validateRequiredFields, (req, res) => {
     });
     req.flash('success', 'Thanks! Your expense was successfully recorded.');
     sendEmail(req.body.email, {
-        subject: 'Your Reimbursement Request',
+        subject: 'Fingers Crossed! Your Reimbursement Request Was Submitted',
         title: 'Reimbursement Request',
-        preheader: 'Here is a copy of your reimbursement request for your records.',
-        superheader: 'HI',
-        header: 'We successfully received your reimbursement request!',
-        paragraph: `Here is a copy for your own records. <br />
-                name: ${req.body.name} <br />
-                email: ${req.body.email} <br />
-                description: ${req.body.description} <br />
-                amount: ${req.body.amount} <br />
-                budget: ${req.body.budget} <br />
-                date: ${req.body.date} <br />
-                reimbursementType: ${req.body.reimbursementType} <br />
-                additionalInfo: ${req.body.additionalInfo} <br /><br />
+        preheader: 'Your reimbursement was just submitted for review. Your copy of the request is included in this email!',
+        superheader: 'HI THERE',
+        header: 'Reimbursement Request Submitted',
+        paragraph: `Your reimbursement was just submitted for review. Here is a copy for your records. <br />
+                Description: ${req.body.description} <br />
+                Amount: $${req.body.amount.toFixed(2)} <br />
+                Budget: ${req.body.budget} <br />
+                Date: ${req.body.date} <br />
+                Reimbursement Type: ${req.body.reimbursementType} <br />
+                Additional Info: ${req.body.additionalInfo} <br /><br />
                 Best,<br />
                 ZBudget Support`
     });

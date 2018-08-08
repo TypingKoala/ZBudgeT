@@ -4,55 +4,73 @@
         .mT-30
             if successMessage
                 .alert.alert-success(role="alert") #{successMessage}
-            link(rel="stylesheet" href="https://unpkg.com/filepond/dist/filepond.css")
-            link(rel="stylesheet" href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css")
-            form(method="post" action="/spending/create")
+            if failureMessage
+                .alert.alert-danger(role="alert") #{failureMessage}
+            if failedValidation
+                each error in failedValidation
+                    .alert.alert-danger(role="alert") #{error.msg}
+            link(rel="stylesheet" href="/assets/css/filepond.css")
+            link(rel="stylesheet" href="/assets/css/filepond-plugin-image-preview.css")
+            form.needs-validation(method="post" action="/spending/create" novalidate)
                 .form-group
                 label(for="emnameail") What is your name?
                 input.form-control-plaintext#email(type='text' name="name" readonly value=`${user.name}`)
+                
                 .form-group
                 label(for="email") What is your email?
                 input.form-control-plaintext#email(type='text' name="email" readonly value=`${user.email}`)
+                
                 .form-group
                 label(for='description') What was the reimbursement for?
                 input.form-control(type='text', name='description' placeholder="Paid for gas at Exxon" aria-describedby="roleNameHelp" required)
                 //small#roleNameHelp.form-text.text-muted This must be unique.
+                .invalid-feedback Please enter a description of this expense.
+                
                 .form-group
                 label(for='amount') How much did it cost?
                 .input-group.mb-3
                     .input-group-prepend
                         span.input-group-text $
                     input.form-control(type='text', name='amount' placeholder="27.51" pattern="[-+]?([0-9]*\.[0-9]+|[0-9]+)" aria-describedby="permissionsHelp" required)
-                    //small#permissionsHelp.form-text.text-muted How much did it cost?
+                    .invalid-feedback Please enter a valid amount.
+                
                 .form-group
                 label(for='budget') What budget item will this draw from?
                 select.form-control#budget(name="budget" required)
                     option(value="") Choose one...
                     option(value="House") House
+                .invalid-feedback Please select a budget.
+                
                 .form-group
                 label(for="date") What day did this expense occur?
                 input.form-control#date(type='text' name="date" placeholder="08/05/2018" pattern="^(1[0-2]|0[1-9])/(3[01]|[12][0-9]|0[1-9])/[0-9]{4}$" required)
+                .invalid-feedback Please enter a valid date.
                 small.form-text.text-muted Date format should be MM/DD/YYYY
-                .invalid-tooltip Please enter a valid date.
+                
                 .form-group
                 label(for="reimbursementType") How would you like to be reimbursed?
                 select.form-control#reimbursementType(name="reimbursementType" required)
                     option(value="") Choose one...
                     option(value="Housebill Credit") Housebill Credit
                     option(value="Check") Check
+                .invalid-feedback Please select a reimbursement option.
+                
                 .form-group
                 label(for="additionalInfo") Is there anything else you would like to add?
                 textarea.form-control#additionalInfo(name="additionalInfo" rows="3")
+                
                 .form-group
                 label(for="attachments") Please attach your receipts and bank statements here:
                 input.form-control.filepond#attachments(type="file" name="attachments" required)
+                .invalid-feedback Please upload your documentation.
                 small.form-text.text-muted If the invoice does not include information about the name on the credit card/the last four digits, please attach a screenshot of your bank/credit card statement showing the transaction. Not doing this when you need to will delay your reimbursement.
+                
                 .form-group
                 button.btn.btn-primary(type='submit') Submit
-            script(src='https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.js')
-            script(src='https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js')
-            script(src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js")
-            script(src="https://unpkg.com/filepond/dist/filepond.js")
+            script(src='/assets/js/filepond-plugin-image-exif-orientation.js')
+            script(src='/assets/js/filepond-plugin-file-validate-size.js')
+            script(src="/assets/js/filepond-plugin-image-preview.js")
+            script(src="/assets/js/filepond.js")
             script.
                 FilePond.registerPlugin(
                     FilePondPluginImageExifOrientation,
@@ -67,4 +85,22 @@
                     fileRenameFunction: (file) => {
                         return `my_new_name${file.extension}`;
                     }
-                })
+                });
+                // Example starter JavaScript for disabling form submissions if there are invalid fields
+                (function() {
+                'use strict';
+                window.addEventListener('load', function() {
+                    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                    var forms = document.getElementsByClassName('needs-validation');
+                    // Loop over them and prevent submission
+                    var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                    });
+                }, false);
+                })();

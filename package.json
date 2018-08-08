@@ -45,9 +45,6 @@
     "xss-filters": "^1.2.7"
   },
   "devDependencies": {
-    "eslint": "^5.3.0",
-    "eslint-config-google": "^0.9.1",
-    "gulp": "^3.9.1",
     "hooks": "^0.3.2",
     "mocha": "^5.2.0"
   }

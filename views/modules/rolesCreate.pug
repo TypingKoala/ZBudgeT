@@ -2,14 +2,16 @@
     .bgc-white.p-20.bd
         h6.c-grey-900 Create a New Role
         .mT-30
+            if failureMessage
+                .alert.alert-danger #{failureMessage}
             form(method="post" action="/roles/create")
                 .form-group
                 label(for='roleName') Role Name
-                input.form-control(type='text', name='roleName' placeholder="house-manager" aria-describedby="roleNameHelp")
+                input.form-control(type='text', name='roleName' placeholder="house-manager" aria-describedby="roleNameHelp" required)
                 small#roleNameHelp.form-text.text-muted This must be unique.
                 .form-group
                 label(for='permissions') Role Permissions
-                input.form-control(type='text', name='permissions' placeholder="house.items.edit, house.items.view" aria-describedby="permissionsHelp")
+                input.form-control(type='text', name='permissions' placeholder="house.items.edit, house.items.view" aria-describedby="permissionsHelp" required)
                 small#permissionsHelp.form-text.text-muted Your input should be a list of permissions separated by commas.
                 .form-group
                 button.btn.btn-primary(type='submit') Submit

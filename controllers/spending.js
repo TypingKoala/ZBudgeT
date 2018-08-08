@@ -9,7 +9,6 @@ const crypto = require('crypto');
 const rimraf = require('rimraf'); // Deletes non-empty directories
 const Raven = require('raven');
 const sendEmail = require('./sendEmails');
-var xssFilters = require('xss-filters');
 
 const { body, validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');

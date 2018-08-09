@@ -28,6 +28,9 @@ var ItemSchema = new mongoose.Schema({
     attachments: {
         type: Array
     },
+    status: {
+        type: String
+    }
 });
 
 var Item = mongoose.model('Item', ItemSchema);

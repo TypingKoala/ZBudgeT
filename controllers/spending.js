@@ -10,7 +10,10 @@ const rimraf = require('rimraf'); // Deletes non-empty directories
 const Raven = require('raven');
 const sendEmail = require('./sendEmails');
 const authorize = require('../middlewares/authorize');
-var dateFormat = require('dateformat');
+const dateFormat = require('dateformat');
+const permissionCheck = require('../middlewares/authorize').permissionCheck;
+const rename = require('rename');
+
 
 const {
     body,
@@ -21,12 +24,37 @@ const {
 } = require('express-validator/filter');
 
 app.get('/spending', authorize.signIn, (req, res) => {
-    res.render('spending', {
-        title: 'Spending',
-        user: req.user,
-        successMessage: req.flash('success')[0],
-        failureMessage: req.flash('failure')[0],
-        failedValidation: req.flash('failedvalidation')
+    var conditions = [];
+    // If global permissions, show all items
+    if (req.user.permissions['global.items.view']) {
+        conditions = [{}];
+        // Otherwise, restrict viewing of items
+    } else {
+        // Allow viewing of your own items
+        conditions.push({
+            email: req.user.email
+        });
+        // For every permission,
+        for (var element in req.user.permissions) {
+            // Check if it is an items.view permission
+            var result = permissionCheck(element, 'items', 'view');
+            if (result) {
+                // if a 'budget'.items.view permission exists, add 'budget' to conditions
+                conditions.push({
+                    budget: result
+                });
+            }
+        }
+    }
+    Item.find().or(conditions).then(items => {
+        res.render('spending', {
+            title: 'Spending',
+            user: req.user,
+            items,
+            successMessage: req.flash('success')[0],
+            failureMessage: req.flash('failure')[0],
+            failedValidation: req.flash('failedvalidation')
+        });
     });
 });
 
@@ -89,10 +117,9 @@ app.post('/spending/create', authorize.signIn, [
         attachments = [];
         var attachmentLen = req.body.attachments.length;
         req.body.attachments.forEach((folderId) => {
-            var filename = fs.readdirSync(os.tmpdir() + '/zbudget/' + folderId)[0]
+            var filename = fs.readdirSync(os.tmpdir() + '/zbudget/' + folderId)[0];
             var path = os.tmpdir() + '/zbudget/' + folderId + '/' + filename;
-            var extension = filename.split('.').pop()
-            var newfilename = crypto.randomBytes(8).toString('hex') + "." + extension;
+            var newfilename = rename(filename, {basename: crypto.randomBytes(8).toString('hex')});
             options = {
                 destination: `userUploads/${newfilename}`,
                 public: true
@@ -101,7 +128,7 @@ app.post('/spending/create', authorize.signIn, [
                 if (err) reject(err);
                 console.log('https://storage.googleapis.com/zbudget/' + metadata.name);
                 attachments.push('https://storage.googleapis.com/zbudget/' + metadata.name);
-                attachmentLen --;
+                attachmentLen--;
                 if (attachmentLen === 0) {
                     resolve(attachments);
                 }
@@ -118,9 +145,10 @@ app.post('/spending/create', authorize.signIn, [
             description: req.body.description,
             amount: req.body.amount,
             budget: req.body.budget,
-            date: req.body.date,
+            date: dateFormat(req.body.date, 'fullDate'),
             reimbursementType: req.body.reimbursementType,
             additionalInfo: req.body.additionalInfo,
+            status: 'opened',
             attachments
         }).then(item => {
             if (!item) {

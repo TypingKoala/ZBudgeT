@@ -3,11 +3,11 @@ const express = require('express');
 const app = express.Router();
 
 // List the type
-var permissionContext = [
+var permissionLocale = [
     'global',
     'house'
 ];
-var permissionSubcontext = [
+var permissionContext = [
     'roles',
     'budgets',
     'items', 
@@ -22,15 +22,15 @@ var permissionType = [
 /**
  * Takes in permissions arrays that define permission structure
  * Returns a complete list of all permissions
+ * @param {Array} permissionLocale
  * @param {Array} permissionContext
- * @param {Array} permissionSubcontext
  * @param {Array} permissionType
  * @returns
  */
-function buildPermissions(permissionContext, permissionSubcontext, permissionType) {
+function buildPermissions(permissionLocale, permissionContext, permissionType) {
     var permissions = [];
-    permissionContext.forEach(pc => {
-        permissionSubcontext.forEach(ps => {
+    permissionLocale.forEach(pc => {
+        permissionContext.forEach(ps => {
             permissionType.forEach(pt => {
                 permissions.push({value: `${pc}.${ps}.${pt}`});
             });
@@ -41,7 +41,7 @@ function buildPermissions(permissionContext, permissionSubcontext, permissionTyp
 
 app.get('/list', (req, res) => {
     res.json({
-        permissions: buildPermissions(permissionContext, permissionSubcontext, permissionType)
+        permissions: buildPermissions(permissionLocale, permissionContext, permissionType)
     });
 });
 

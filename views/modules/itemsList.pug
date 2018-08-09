@@ -1,0 +1,51 @@
+.row
+    .col-md-12
+        .bgc-white.bd.bdrs-3.p-20.mB-20
+            h4.c-grey-900.mB-20 List Items
+            table#dataTable.table.table-striped.table-bordered(cellspacing='0', width='100%')
+                thead
+                    tr
+                        th Name
+                        th Item Description
+                        th Amount
+                        th Date
+                        th More Info
+                tfoot
+                    tr
+                        th Name
+                        th Item Description
+                        th Amount
+                        th Date
+                        th More Info
+                tbody
+                    for item in items
+                        tr
+                            td #{item.name}
+                            td #{item.description}
+                            td $#{item.amount.toFixed(2)}
+                            td #{item.date}
+                            td 
+                                button.btn.btn-primary(data-toggle="modal" type="button" data-target=`#info-${item._id}`)
+                                    span(aria-hidden="tru") More Info
+                                .modal.fade(id=`info-${item._id}` tabindex="-1" role="dialog" aria-hidden="true")
+                                    .modal-dialog(role="document")
+                                        .modal-content
+                                            .modal-header
+                                                h5.modal-title#regenerateAPIKeyLabel More Information
+                                                button.close(data-dismiss="modal" type="button" aria-label="Close")
+                                                    span(aria-hidden="true") &times;
+                                            .modal-body
+                                                p Name: #{item.name}
+                                                p Email: #{item.email}
+                                                p Description: #{item.description}
+                                                p Amount: $#{item.amount.toFixed(2)}
+                                                p Budget: #{item.budget}
+                                                p Date: #{item.date}
+                                                p Reimbursement Type: #{item.reimbursementType}
+                                                p Additional Info: #{item.additionalInfo}
+                                                p Attachments: 
+                                                each attachment, index in item.attachments
+                                                    p
+                                                        a(href=attachment) Attachment #{index}
+                                            .modal-footer
+                                                button.btn.btn-secondary(data-dismiss="modal" type="button") Close

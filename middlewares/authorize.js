@@ -39,6 +39,23 @@ var addPermissions = function (req, res, next) {
         next();
     }
 };
+/**
+ * Function that returns middleware that checks for
+ * given permission, or redirects to sign in page
+ * @param {String} permission The permission string to check against in order to access
+ * @returns Middleware
+ */
+function checkAccessMW(permission) {
+    return function (req, res, next) {
+        if (req.user.permissions[permission]) {
+            next();
+        } else {
+            // If there is no roles permission
+            req.flash('error', "You don't have the necessary permissions to access that page.");
+            res.redirect('/signin');
+        }
+    };
+}
 
 
 /**
@@ -63,3 +80,4 @@ function permissionCheck(permission, context, type) {
 module.exports.signIn = signIn;
 module.exports.addPermissions = addPermissions;
 module.exports.permissionCheck = permissionCheck;
+module.exports.checkAccessMW = checkAccessMW;

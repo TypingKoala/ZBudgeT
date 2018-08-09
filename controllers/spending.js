@@ -14,8 +14,6 @@ const dateFormat = require('dateformat');
 const permissionCheck = require('../middlewares/authorize').permissionCheck;
 const rename = require('rename');
 const getStatusOptions = require('./api/items').getStatusOptions;
-
-
 const {
     body,
     validationResult,
@@ -24,6 +22,8 @@ const {
 const {
     sanitizeBody
 } = require('express-validator/filter');
+
+
 
 app.get('/spending', authorize.signIn, [
     query('filter')

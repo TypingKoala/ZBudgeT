@@ -13,18 +13,25 @@ const Role = require('../models/roles');
 const Raven = require('raven');
 const authorize = require('../middlewares/authorize');
 
-app.get('/roles', authorize.signIn, (req, res) => {
-    if (req.user.permissions['roles.view']) {
-        renderRolesList(res, req);
-    } else {
-        // If there is no roles permission
-        req.flash('error', "You don't have the necessary permissions to access this page.");
-        res.redirect('/signin');
-    }
+app.get('/roles', authorize.signIn, authorize.checkAccessMW('global.roles.view'), (req, res) => {
+    User.find({}, (err, users) => {
+        Role.find({}, (err, roles) => {
+            res.render('rolesList', {
+                title: 'Roles',
+                user: req.user,
+                users,
+                roles,
+                roleCreateFailure: req.flash('roleCreateFailure')[0],
+                roleEditFailure: req.flash('roleEditFailure')[0],
+                roleCreateSuccess: req.flash('roleCreateSuccess')[0],
+                roleEditSuccess: req.flash('roleEditSuccess')[0]
+            });
+        });
+    });
 });
 
 
-app.post('/roles/delete', authorize.signIn, [
+app.post('/roles/delete', authorize.signIn, authorize.checkAccessMW('global.roles.edit'), [
     body('id')
     .isMongoId().withMessage('Invalid delete ID')
     .not().isEmpty().withMessage('No ID given')
@@ -43,7 +50,7 @@ app.post('/roles/delete', authorize.signIn, [
     });
 });
 
-app.post('/roles/create', [
+app.post('/roles/create', authorize.checkAccessMW('global.roles.edit'), [
     body('permissions')
     .isString()
     .escape(),
@@ -78,7 +85,7 @@ app.post('/roles/create', [
     res.redirect('back');
 });
 
-app.post('/roles/update', [
+app.post('/roles/update', authorize.checkAccessMW('global.roles.edit'), [
     body('id')
     .isMongoId().withMessage('Not a valid MongoID')
     .not().isEmpty().withMessage('No ID given'),
@@ -140,23 +147,5 @@ var checkPermission = function (user, permission) {
         });
     });
 };
-
-function renderRolesList(res, req) {
-    User.find({}, (err, users) => {
-        Role.find({}, (err, roles) => {
-            res.render('rolesList', {
-                title: 'Roles',
-                user: req.user,
-                users,
-                roles,
-                roleCreateFailure: req.flash('roleCreateFailure')[0],
-                roleEditFailure: req.flash('roleEditFailure')[0],
-                roleCreateSuccess: req.flash('roleCreateSuccess')[0],
-                roleEditSuccess: req.flash('roleEditSuccess')[0]
-            });
-        });
-    });
-}
-
 module.exports = app;
 module.exports.checkPermission = checkPermission;

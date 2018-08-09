@@ -36,7 +36,7 @@
                                                     input(type='hidden' name='id' value=`${eachrole._id}`)
                                                     button.btn.btn-danger Confirm
                             td 
-                                if user.permissions['roles.edit']
+                                if user.permissions['global.roles.edit']
                                     form.form-inline(action='/roles/update' method="post")
                                         .col-md-10
                                             input.select.mb-2.mr-sm-2(type='text' name='newPermissions' value=`${eachrole.permissions}`)

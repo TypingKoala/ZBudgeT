@@ -13,32 +13,26 @@ const Role = require('../models/roles');
 const Raven = require('raven');
 const authorize = require('../middlewares/authorize');
 
-app.get('/users', authorize.signIn, (req, res) => {
+app.get('/users', authorize.signIn, authorize.checkAccessMW('global.users.view'), (req, res) => {
     // Check if editing specific user and has permissions to edit
-    if (req.user.permissions['users.view']) {
-        User.find({}, (err, users) => {
-            Role.find({}, (err, roles) => {
-                res.render('usersList', {
-                    title: 'List Users',
-                    user: req.user,
-                    users,
-                    roles,
-                    userEditSuccess: req.flash('userEditSuccess')[0],
-                    userEditFailure: req.flash('userEditFailure')[0]
-                });
+    User.find({}, (err, users) => {
+        Role.find({}, (err, roles) => {
+            res.render('usersList', {
+                title: 'List Users',
+                user: req.user,
+                users,
+                roles,
+                userEditSuccess: req.flash('userEditSuccess')[0],
+                userEditFailure: req.flash('userEditFailure')[0]
             });
         });
-    } else {
-        // If there is no roles permission
-        req.flash('error', "You don't have the necessary permissions to access this page.");
-        res.redirect('/signin');
-    }
+    });
 });
 
-app.post('/users/delete', authorize.signIn, [
+app.post('/users/delete', authorize.signIn, authorize.checkAccessMW('global.users.edit'), [
     body('id')
-        .isMongoId().withMessage('Invalid delete ID')
-        .not().isEmpty().withMessage('No ID given')
+    .isMongoId().withMessage('Invalid delete ID')
+    .not().isEmpty().withMessage('No ID given')
 ], (req, res) => {
     if (!validationResult(req).isEmpty()) {
         var firstMessage = validationResult(req).array()[1].msg;
@@ -55,13 +49,13 @@ app.post('/users/delete', authorize.signIn, [
 });
 
 
-app.post('/users/update', authorize.signIn, [
+app.post('/users/update', authorize.signIn, authorize.checkAccessMW('global.users.edit'), [
     body('id')
-        .isMongoId().withMessage('Not a valid MongoID')
-        .not().isEmpty().withMessage('No ID given'),
+    .isMongoId().withMessage('Not a valid MongoID')
+    .not().isEmpty().withMessage('No ID given'),
     body('newRoles')
-        .isString()
-        .escape()
+    .isString()
+    .escape()
 ], (req, res) => {
     // Check if userID validator failed
     if (!validationResult(req).isEmpty()) {

@@ -3,7 +3,7 @@
           .sidebar-logo
             .peers.ai-c.fxw-nw
               .peer.peer-greed
-                a.sidebar-link.td-n(href='index.html')
+                a.sidebar-link.td-n(href='/')
                   .peers.ai-c.fxw-nw
                     .peer
                       .logo
@@ -20,27 +20,30 @@
                 span.icon-holder
                   i.c-blue-500.ti-home
                 span.title Home
-            li.nav-item
-              a.sidebar-link(href='/budgets')
-                span.icon-holder
-                  i.c-indigo-500.ti-bar-chart
-                span.title Budgets
+            if user.permissions['global.budgets.view']
+              li.nav-item
+                a.sidebar-link(href='/budgets')
+                  span.icon-holder
+                    i.c-indigo-500.ti-bar-chart
+                  span.title Budgets
             li.nav-item
               a.sidebar-link(href='/spending')
                 span.icon-holder
                   i.c-green-500.ti-pencil
                 span.title Spending
-            li.nav-item
-              a.sidebar-link(href='/users')
-                span.icon-holder
-                  i.c-brown-500.ti-user
-                span.title Users
-            li.nav-item
-              a.sidebar-link(href='/roles')
-                span.icon-holder
-                  i.c-orange-500.ti-layout-list-thumb
-                span.title Roles
-            if user.permissions['reports.view']
+            if user.permissions['global.users.view']
+              li.nav-item
+                a.sidebar-link(href='/users')
+                  span.icon-holder
+                    i.c-brown-500.ti-user
+                  span.title Users
+            if user.permissions['global.roles.view']
+              li.nav-item
+                a.sidebar-link(href='/roles')
+                  span.icon-holder
+                    i.c-orange-500.ti-layout-list-thumb
+                  span.title Roles
+            if user.permissions['global.reports.view']
               li.nav-item
                 a.sidebar-link(href='/reports')
                   span.icon-holder

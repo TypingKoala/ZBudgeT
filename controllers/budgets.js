@@ -7,7 +7,7 @@ const app = express.Router();
 
 const authorize = require('../middlewares/authorize'); // Require Authorize Middleware
 
-app.get('/budgets', authorize.signIn, (req, res) => {
+app.get('/budgets', authorize.signIn, authorize.checkAccessMW('global.budgets.view'), (req, res) => {
     res.render('budgets', {
         title: 'Budgets',
         user: req.user

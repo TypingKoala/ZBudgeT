@@ -18,6 +18,7 @@ app.use('/user', require('./user'));
 app.use(require('./upload'));
 app.use('/permissions', require('./permissions'));
 app.use('/roles', require('./roles'));
+app.use('/items', require('./items'));
 
 // 401 Unauthorized
 app.get('/unauthorized', (req, res) => {

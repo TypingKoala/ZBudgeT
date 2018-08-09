@@ -1,11 +1,24 @@
 .row
     .col-md-12
         .bgc-white.bd.bdrs-3.p-20.mB-20
-            h4.c-grey-900.mB-20 List Items
+            if filter
+                h4.c-grey-900.mB-20 List Items (showing <b>#{filter}</b>)
+            else
+                h4.c-grey-900.mB-20 List Items
+            .btn-group(style="padding-bottom: 20px")
+                button.btn.btn-secondary.dropdown-toggle(type="button" data-toggle="dropdown") Select a filter
+                .dropdown-menu
+                    a.dropdown-item(href="?filter=") Disable Filters
+                    a.dropdown-item(href="?filter=opened") Only Opened
+                    a.dropdown-item(href="?filter=issues") Only Issues
+                    a.dropdown-item(href="?filter=closed") Only Closed
+            if itemsListFailure
+                .alert.alert-danger #{itemsListFailure}
             table#dataTable.table.table-striped.table-bordered(cellspacing='0', width='100%')
                 thead
                     tr
                         th Name
+                        th Status
                         th Item Description
                         th Amount
                         th Date
@@ -13,6 +26,7 @@
                 tfoot
                     tr
                         th Name
+                        th Status
                         th Item Description
                         th Amount
                         th Date
@@ -21,6 +35,7 @@
                     for item in items
                         tr
                             td #{item.name}
+                            td #{item.status}
                             td #{item.description}
                             td $#{item.amount.toFixed(2)}
                             td #{item.date}
@@ -35,17 +50,43 @@
                                                 button.close(data-dismiss="modal" type="button" aria-label="Close")
                                                     span(aria-hidden="true") &times;
                                             .modal-body
-                                                p Name: #{item.name}
-                                                p Email: #{item.email}
-                                                p Description: #{item.description}
-                                                p Amount: $#{item.amount.toFixed(2)}
-                                                p Budget: #{item.budget}
-                                                p Date: #{item.date}
-                                                p Reimbursement Type: #{item.reimbursementType}
-                                                p Additional Info: #{item.additionalInfo}
-                                                p Attachments: 
-                                                each attachment, index in item.attachments
-                                                    p
-                                                        a(href=attachment) Attachment #{index}
+                                                table.table.table-borderless
+                                                    tbody
+                                                        tr
+                                                            th(scope="row") Name
+                                                            td #{item.name}
+                                                        tr
+                                                            th(scope="row") Email
+                                                            td #{item.email}
+                                                        tr
+                                                            th(scope="row") Status
+                                                            td #{item.status}
+                                                        tr
+                                                            th(scope="row") Date Added
+                                                            td #{item.dateAdded}
+                                                        tr
+                                                            th(scope="row") Description
+                                                            td #{item.description}
+                                                        tr
+                                                            th(scope="row") Amount
+                                                            td $#{item.amount.toFixed(2)}
+                                                        tr
+                                                            th(scope="row") Budget
+                                                            td #{item.budget}
+                                                        tr
+                                                            th(scope="row") Date
+                                                            td #{item.date}
+                                                        tr
+                                                            th(scope="row") Reimb. Type
+                                                            td #{item.reimbursementType}
+                                                        tr
+                                                            th(scope="row") Additional Info
+                                                            td #{item.additionalInfo}
+                                                        tr 
+                                                            th(scope="row") Attachments
+                                                            td 
+                                                                each attachment, index in item.attachments
+                                                                     p
+                                                                        a(href=attachment) Attachment #{index + 1}
                                             .modal-footer
                                                 button.btn.btn-secondary(data-dismiss="modal" type="button") Close

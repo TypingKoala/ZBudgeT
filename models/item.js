@@ -30,6 +30,10 @@ var ItemSchema = new mongoose.Schema({
     },
     status: {
         type: String
+    },
+    dateAdded: {
+        type: Date,
+        default: Date.now()
     }
 });
 

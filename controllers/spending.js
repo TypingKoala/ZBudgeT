@@ -13,17 +13,29 @@ const authorize = require('../middlewares/authorize');
 const dateFormat = require('dateformat');
 const permissionCheck = require('../middlewares/authorize').permissionCheck;
 const rename = require('rename');
+const getStatusOptions = require('./api/items').getStatusOptions;
 
 
 const {
     body,
-    validationResult
+    validationResult,
+    query
 } = require('express-validator/check');
 const {
     sanitizeBody
 } = require('express-validator/filter');
 
-app.get('/spending', authorize.signIn, (req, res) => {
+app.get('/spending', authorize.signIn, [
+    query('filter')
+    // check if filter is in this array
+        .isIn(getStatusOptions()).withMessage('Filter mode invalid.')
+], (req, res) => {
+    // Check validator
+    if (!validationResult(req).isEmpty()) {
+        req.flash('itemsListFailure', validationResult(req).array()[0].msg);
+        return res.redirect('/spending');
+    }
+    // Initialize 'or' conditions based on permissions
     var conditions = [];
     // If global permissions, show all items
     if (req.user.permissions['global.items.view']) {
@@ -46,16 +58,38 @@ app.get('/spending', authorize.signIn, (req, res) => {
             }
         }
     }
-    Item.find().or(conditions).then(items => {
-        res.render('spending', {
-            title: 'Spending',
-            user: req.user,
-            items,
-            successMessage: req.flash('success')[0],
-            failureMessage: req.flash('failure')[0],
-            failedValidation: req.flash('failedvalidation')
+    // If there is no filter param, show all items allowed
+    if (!req.query.filter) {
+        Item.find().or(conditions).then(items => {
+            res.render('spending', {
+                title: 'Spending',
+                user: req.user,
+                items,
+                successMessage: req.flash('success')[0],
+                failureMessage: req.flash('failure')[0],
+                failedValidation: req.flash('failedvalidation'),
+                itemsListFailure: req.flash('itemsListFailure')[0]
+            });
         });
-    });
+    // if there is a filter param, use it
+    } else {
+        Item.find()
+            .where('status').equals(req.query.filter)
+            .or(conditions)
+            .then(items => {
+                res.render('spending', {
+                    title: 'Spending',
+                    user: req.user,
+                    items,
+                    filter: req.query.filter,
+                    filters: getStatusOptions(),
+                    successMessage: req.flash('success')[0],
+                    failureMessage: req.flash('failure')[0],
+                    failedValidation: req.flash('failedvalidation'),
+                    itemsListFailure: req.flash('itemsListFailure')[0]
+                });
+            });
+    }
 });
 
 app.post('/spending/create', authorize.signIn, [
@@ -71,6 +105,7 @@ app.post('/spending/create', authorize.signIn, [
     .escape(),
     body('amount')
     .not().isEmpty().withMessage('Amount is required')
+    .isCurrency().withMessage('You entered an invalid amount')
     .toFloat().withMessage('You entered an invalid amount'),
     body('budget')
     .not().isEmpty()
@@ -119,7 +154,9 @@ app.post('/spending/create', authorize.signIn, [
         req.body.attachments.forEach((folderId) => {
             var filename = fs.readdirSync(os.tmpdir() + '/zbudget/' + folderId)[0];
             var path = os.tmpdir() + '/zbudget/' + folderId + '/' + filename;
-            var newfilename = rename(filename, {basename: crypto.randomBytes(8).toString('hex')});
+            var newfilename = rename(filename, {
+                basename: crypto.randomBytes(8).toString('hex')
+            });
             options = {
                 destination: `userUploads/${newfilename}`,
                 public: true

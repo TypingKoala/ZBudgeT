@@ -34,6 +34,10 @@ var ItemSchema = new mongoose.Schema({
     dateAdded: {
         type: Date,
         default: Date.now()
+    },
+    comments: {
+        type: String,
+        default: 'No comments'
     }
 });
 

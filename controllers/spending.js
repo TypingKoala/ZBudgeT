@@ -66,7 +66,7 @@ app.get('/spending', authorize.signIn, [
     }).then(budgets => {
         // If there is no filter param, show all items allowed
         if (!req.query.filter) {
-            Item.find().or(conditions).then(items => {
+            Item.find().or(conditions).sort({dateAdded: 'asc'}).then(items => {
                 res.render('spending', {
                     title: 'Spending',
                     user: req.user,
@@ -75,7 +75,8 @@ app.get('/spending', authorize.signIn, [
                     successMessage: req.flash('success')[0],
                     failureMessage: req.flash('failure')[0],
                     failedValidation: req.flash('failedvalidation'),
-                    itemsListFailure: req.flash('itemsListFailure')[0]
+                    itemsListFailure: req.flash('itemsListFailure')[0],
+                    itemsListSuccess: req.flash('itemsListSuccess')[0]
                 });
             });
             // if there is a filter param, use it
@@ -83,6 +84,7 @@ app.get('/spending', authorize.signIn, [
             Item.find()
                 .where('status').equals(req.query.filter)
                 .or(conditions)
+                .sort({dateAdded: 'asc'})
                 .then(items => {
                     res.render('spending', {
                         title: 'Spending',
@@ -94,7 +96,8 @@ app.get('/spending', authorize.signIn, [
                         successMessage: req.flash('success')[0],
                         failureMessage: req.flash('failure')[0],
                         failedValidation: req.flash('failedvalidation'),
-                        itemsListFailure: req.flash('itemsListFailure')[0]
+                        itemsListFailure: req.flash('itemsListFailure')[0],
+                        itemsListSuccess: req.flash('itemsListSuccess')[0]
                     });
                 });
         }
@@ -242,5 +245,39 @@ app.post('/spending/create', authorize.signIn, [
         });
     });
 });
+
+app.post('/spending/edit',
+    authorize.signIn,
+    authorize.checkAccessMW('global.items.edit'), [
+        body('status')
+        .isIn(getStatusOptions()).withMessage('Status invalid'),
+        body('comments')
+        .escape(),
+        body('id')
+        .isMongoId().withMessage('Invalid ID provided.')
+    ],
+    (req, res) => {
+        if (!validationResult(req).isEmpty()) {
+            req.flash('failedvalidation', validationResult(req).array());
+            return res.redirect('back');
+        }
+        var update = {};
+        if (!req.body.status) {
+            update = {
+                comments: req.body.comments
+            }
+        } else {
+            update = {
+                comments: req.body.comments,
+                status: req.body.status
+            };
+        }
+        Item.updateOne({
+            _id: req.body.id
+        }, update, (err, updated) => {
+            req.flash('itemsListSuccess', 'Item edited successfully!');
+            res.redirect('back');
+        });
+    });
 
 module.exports = app;

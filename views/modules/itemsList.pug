@@ -14,6 +14,8 @@
                     a.dropdown-item(href="?filter=closed") Only Closed
             if itemsListFailure
                 .alert.alert-danger #{itemsListFailure}
+            if itemsListSuccess
+                .alert.alert-success #{itemsListSuccess}
             table#dataTable.table.table-striped.table-bordered(cellspacing='0', width='100%')
                 thead
                     tr
@@ -88,5 +90,23 @@
                                                                 each attachment, index in item.attachments
                                                                      p
                                                                         a(href=attachment) Attachment #{index + 1}
+                                                        if user.permissions['global.items.edit']
+                                                            tr
+                                                                th(scope="row") Edit
+                                                                td 
+                                                                    form(action="/spending/edit" method="post")
+                                                                        .form-group
+                                                                            label Comments
+                                                                            textarea.form-control(name="comments") #{item.comments}
+                                                                        .form-group
+                                                                            label Status
+                                                                            select.form-control(name="status")
+                                                                                option(value="") Don't change
+                                                                                option(value="opened") Opened
+                                                                                option(value="issues") Issues
+                                                                                option(value="closed") Closed
+                                                                        .form-group
+                                                                            input(type='hidden' name='id' value=item._id)
+                                                                            button.btn.btn-primary(type="submit") Submit
                                             .modal-footer
                                                 button.btn.btn-secondary(data-dismiss="modal" type="button") Close

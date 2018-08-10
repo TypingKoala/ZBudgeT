@@ -3,6 +3,7 @@
 const express = require('express');
 const app = express.Router();
 const Item = require('../models/item');
+const Budget = require('../models/budget');
 const fs = require('fs');
 const os = require('os');
 const crypto = require('crypto');
@@ -28,7 +29,7 @@ const {
 app.get('/spending', authorize.signIn, [
     query('filter')
     // check if filter is in this array
-        .isIn(getStatusOptions()).withMessage('Filter mode invalid.')
+    .isIn(getStatusOptions()).withMessage('Filter mode invalid.')
 ], (req, res) => {
     // Check validator
     if (!validationResult(req).isEmpty()) {
@@ -58,38 +59,46 @@ app.get('/spending', authorize.signIn, [
             }
         }
     }
-    // If there is no filter param, show all items allowed
-    if (!req.query.filter) {
-        Item.find().or(conditions).then(items => {
-            res.render('spending', {
-                title: 'Spending',
-                user: req.user,
-                items,
-                successMessage: req.flash('success')[0],
-                failureMessage: req.flash('failure')[0],
-                failedValidation: req.flash('failedvalidation'),
-                itemsListFailure: req.flash('itemsListFailure')[0]
-            });
-        });
-    // if there is a filter param, use it
-    } else {
-        Item.find()
-            .where('status').equals(req.query.filter)
-            .or(conditions)
-            .then(items => {
+
+    // Load all budgets
+    Budget.find({}).sort({
+        name: 'asc'
+    }).then(budgets => {
+        // If there is no filter param, show all items allowed
+        if (!req.query.filter) {
+            Item.find().or(conditions).then(items => {
                 res.render('spending', {
                     title: 'Spending',
                     user: req.user,
                     items,
-                    filter: req.query.filter,
-                    filters: getStatusOptions(),
+                    budgets,
                     successMessage: req.flash('success')[0],
                     failureMessage: req.flash('failure')[0],
                     failedValidation: req.flash('failedvalidation'),
                     itemsListFailure: req.flash('itemsListFailure')[0]
                 });
             });
-    }
+            // if there is a filter param, use it
+        } else {
+            Item.find()
+                .where('status').equals(req.query.filter)
+                .or(conditions)
+                .then(items => {
+                    res.render('spending', {
+                        title: 'Spending',
+                        user: req.user,
+                        items,
+                        budgets,
+                        filter: req.query.filter,
+                        filters: getStatusOptions(),
+                        successMessage: req.flash('success')[0],
+                        failureMessage: req.flash('failure')[0],
+                        failedValidation: req.flash('failedvalidation'),
+                        itemsListFailure: req.flash('itemsListFailure')[0]
+                    });
+                });
+        }
+    });
 });
 
 app.post('/spending/create', authorize.signIn, [

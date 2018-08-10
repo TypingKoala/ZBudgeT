@@ -38,7 +38,8 @@
                 label(for='budget') What budget item will this draw from?
                 select.form-control#budget(name="budget" required)
                     option(value="") Choose one...
-                    option(value="house") House
+                    for bud in budgets
+                        option(value=`${bud.name}.${bud.semester}`) #{bud.name} (#{bud.semester})
                 .invalid-feedback Please select a budget.
                 
                 .form-group
@@ -66,7 +67,7 @@
                 small.form-text.text-muted If the invoice does not include information about the name on the credit card/the last four digits, please attach a screenshot of your bank/credit card statement showing the transaction. Not doing this when you need to will delay your reimbursement.
                 
                 .form-group
-                button.btn.btn-primary(type='submit') Submit
+                button.btn.btn-primary#submit(type='submit') Submit
             script(src='/assets/js/filepond-plugin-image-exif-orientation.js')
             script(src='/assets/js/filepond-plugin-file-validate-size.js')
             script(src="/assets/js/filepond-plugin-image-preview.js")
@@ -78,13 +79,11 @@
                     FilePondPluginFileValidateSize)
                 const inputElement = document.querySelector('input[type="file"]');
                 const pond = FilePond.create( inputElement );
+                var documentOffset = 0;
                 FilePond.setOptions({
                     allowMultiple: true,
                     server: '/api/upload',
-                    maxFileSize: '10MB',
-                    fileRenameFunction: (file) => {
-                        return `my_new_name${file.extension}`;
-                    }
+                    maxFileSize: '10MB'
                 });
                 // Example starter JavaScript for disabling form submissions if there are invalid fields
                 (function() {

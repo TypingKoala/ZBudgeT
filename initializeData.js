@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 if (process.env.NODE_ENV === "production") {
     mongoaddr = process.env.mongoProd;
 } else {
-    mongoaddr= process.env.mongoDev;
+    mongoaddr = process.env.mongoDev;
 }
 
 mongoose.connect(mongoaddr, {
@@ -51,7 +51,7 @@ var fall18spring19budgets = {
     'Capital Improvement': {
         Fall18: 7500,
         Spring18: 7500
-    }, 
+    },
     'Dumpster': {
         Fall18: 2500,
         Spring18: 2500
@@ -63,7 +63,7 @@ var fall18spring19budgets = {
     'Gas/Heating': {
         Fall18: 4500,
         Spring18: 8000
-    }, 
+    },
     'Terminix': {
         Fall18: 200,
         Spring18: 200
@@ -157,11 +157,13 @@ var fall18spring19budgets = {
 function createBudgets(budget) {
     Object.keys(budget).forEach(name => {
         Object.keys(budget[name]).forEach(semester => {
-            Budget.create({
-                name,
-                semester,
-                amount: budget[name][semester]
-            });
+            if (semester === 'Fall18') {
+                Budget.create({
+                    name,
+                    semester,
+                    amount: budget[name][semester]
+                });
+            }
         });
     });
 
@@ -176,9 +178,9 @@ Budget.deleteMany({}, (err) => {
 const permissions = require('./controllers/api/permissions');
 var perms = [];
 permissions.buildPermissions(['global'], permissions.permissionContext, permissions.permissionType)
-.forEach(permission => {
-    perms.push(permission.value);
-});
+    .forEach(permission => {
+        perms.push(permission.value);
+    });
 Roles.create({
     roleName: 'admin',
     permissions: perms

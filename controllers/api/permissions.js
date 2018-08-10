@@ -47,3 +47,7 @@ app.get('/list', (req, res) => {
 
 
 module.exports = app;
+module.exports.buildPermissions = buildPermissions;
+module.exports.permissionLocale = permissionLocale;
+module.exports.permissionContext = permissionContext;
+module.exports.permissionType = permissionType;

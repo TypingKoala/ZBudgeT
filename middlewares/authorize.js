@@ -10,6 +10,8 @@ function signIn(req, res, next) {
     if (req.user) {
         return next();
     } else {
+        console.log(req.url);
+        req.session.redirectAfterLogin = req.url;
         return res.redirect('/signin');
     }
 }
@@ -52,7 +54,7 @@ function checkAccessMW(permission) {
         } else {
             // If there is no roles permission
             req.flash('error', "You don't have the necessary permissions to access that page.");
-            res.redirect('/signin');
+            res.redirect('/');
         }
     };
 }

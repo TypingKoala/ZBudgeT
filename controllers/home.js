@@ -28,7 +28,8 @@ app.get('/', authorize.signIn, (req, res, next) => {
         res.render('home', {
             title: 'Home',
             user: req.user,
-            joke
+            joke,
+            error: req.flash('error')[0]
         });
     });
 });

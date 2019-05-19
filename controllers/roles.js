@@ -10,7 +10,6 @@ const {
 } = require('express-validator/filter');
 const User = require('../models/user.js');
 const Role = require('../models/roles');
-const Raven = require('raven');
 const authorize = require('../middlewares/authorize');
 
 app.get('/roles', authorize.signIn, authorize.checkAccessMW('global.roles.view'), (req, res) => {
@@ -44,7 +43,6 @@ app.post('/roles/delete', authorize.signIn, authorize.checkAccessMW('global.role
     Role.deleteOne({
         _id: req.body.id
     }, (err) => {
-        if (err) return Raven.captureException(err);
         req.flash('roleEditSuccess', 'Role deleted successfully!');
         res.redirect('back');
     });
@@ -80,7 +78,7 @@ app.post('/roles/create', authorize.checkAccessMW('global.roles.edit'), [
     Role.create({
         roleName: req.body.roleName,
         permissions
-    }).catch(err => Raven.captureException(err));
+    }).catch(err => console.log(err));
     req.flash('roleCreateSuccess', 'Role successfully created!');
     res.redirect('back');
 });
@@ -110,13 +108,7 @@ app.post('/roles/update', authorize.checkAccessMW('global.roles.edit'), [
     }, {
         permissions
     }).catch(err => {
-        Raven.setContext({
-            action: 'update roles',
-            role: req.body.id,
-            newPermissions: req.body.newPermissions
-        });
-        Raven.captureException(err);
-        req.flash('roleEditFailure', 'Unknown error occured when updating role.');
+        req.flash('roleEditFailure', 'Unknown error occurred when updating role.');
     });
     req.flash('roleEditSuccess', 'Role edited successfully!');
     res.redirect('back');

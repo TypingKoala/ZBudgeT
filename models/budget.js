@@ -13,6 +13,9 @@ var BudgetSchema = new mongoose.Schema({
     },
     items: {
         type: Array
+    },
+    used: {
+        type: Number
     }
 });
 

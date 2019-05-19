@@ -53,7 +53,6 @@ UserSchema.pre('save', function (next) {
     } else {
         next();
     }
-
 });
 
 UserSchema.methods.validPassword = function (password, cb) {

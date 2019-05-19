@@ -8,24 +8,10 @@ const User = require('../models/user.js');
 const mongoose = require('../middlewares/mongoose.js');
 var session = require('express-session');
 const bodyParser = require('body-parser');
-const Raven = require('Raven');
 const crypto = require('crypto');
 var addPermissions = require('../middlewares/authorize').addPermissions;
 var passport = require('passport');
 
-
-// Set User Context for Raven on Each Load
-app.use((req, res, next) => {
-    if (req.user) {
-        Raven.setContext({
-            user: {
-                email: req.user.email,
-                name: req.user.name
-            }
-        });
-    }
-    next();
-});
 
 // Initialize toggles
 featuretoggles.load(toggles);
@@ -52,7 +38,6 @@ app.use(session({
     store: new MongoStore({
         mongooseConnection: mongoose.connection
     })
-
 }));
 
 // Configure Passport
@@ -240,8 +225,6 @@ app.use((req, res, next) => {
     res.redirect('/404.html');
 });
 
-// Have Raven handle errors before Express
-app.use(Raven.errorHandler());
 
 // 500
 app.use((err, req, res, next) => {

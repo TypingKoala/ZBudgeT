@@ -7,7 +7,6 @@ var crypto = require('crypto');
 var bodyParser = require('body-parser');
 var mkdirp = require('mkdirp'); // Makes directories recursively
 var rimraf = require('rimraf'); // Deletes non-empty directories
-var Raven = require('raven'); // Sentry.io Error Handling
 
 app.use(bodyParser.text());
 
@@ -38,7 +37,6 @@ app.delete('/upload', (req, res) => {
     var fileId = req.body;
     deleteDir = os.tmpdir() + '/zbudget/' + fileId;
     rimraf(deleteDir, (err) => {
-        if (err) return Raven.captureException(err);
         console.log(deleteDir + ' deleted successfully.');
     });
 });

@@ -8,7 +8,6 @@ const fs = require('fs');
 const os = require('os');
 const crypto = require('crypto');
 const rimraf = require('rimraf'); // Deletes non-empty directories
-const Raven = require('raven');
 const sendEmail = require('./sendEmails');
 const authorize = require('../middlewares/authorize');
 const dateFormat = require('dateformat');
@@ -66,7 +65,9 @@ app.get('/spending', authorize.signIn, [
     }).then(budgets => {
         // If there is no filter param, show all items allowed
         if (!req.query.filter) {
-            Item.find().or(conditions).sort({dateAdded: 'asc'}).then(items => {
+            Item.find().or(conditions).sort({
+                dateAdded: 'asc'
+            }).then(items => {
                 res.render('spending', {
                     title: 'Spending',
                     user: req.user,
@@ -84,7 +85,9 @@ app.get('/spending', authorize.signIn, [
             Item.find()
                 .where('status').equals(req.query.filter)
                 .or(conditions)
-                .sort({dateAdded: 'asc'})
+                .sort({
+                    dateAdded: 'asc'
+                })
                 .then(items => {
                     res.render('spending', {
                         title: 'Spending',
@@ -202,11 +205,22 @@ app.post('/spending/create', authorize.signIn, [
         }).then(item => {
             if (!item) {
                 // If error, capture, flash, and return a redirect
-                Raven.captureException(err);
                 req.flash('failure', 'An unknown error occurred saving your request');
                 return res.redirect('back');
             } else {
-                // Successful
+                // Successful: add item to corresponding budget
+                var budgetName = req.body.budget.split('.')[0];
+                var budgetSemester = req.body.budget.split('.')[1];
+                Budget.findOne({
+                    name: budgetName,
+                    semester: budgetSemester
+                }).then(async budget => {
+                    await budget.items.push(item._id);
+                    budget.save();
+                }).catch(err => {
+                    req.flash('failure', 'An unknown error occurred saving your request');
+                    return res.redirect('back');
+                })
                 // Flash success message
                 req.flash('success', 'Thanks! Your expense was successfully recorded.');
                 // Send confirmation email
@@ -231,7 +245,6 @@ app.post('/spending/create', authorize.signIn, [
             }
         }).catch(err => {
             // If error, capture, flash, and return a redirect
-            Raven.captureException(err);
             req.flash('failure', 'An unknown error occurred saving your request');
             return res.redirect('back');
         });
@@ -240,7 +253,7 @@ app.post('/spending/create', authorize.signIn, [
         req.body.attachments.forEach((fileId) => {
             deleteDir = os.tmpdir() + '/zbudget/' + fileId;
             rimraf(deleteDir, (err) => {
-                if (err) return Raven.captureException(err);
+                if (err) return console.log(err);
             });
         });
     });

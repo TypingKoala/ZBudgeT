@@ -10,7 +10,6 @@ const {
 } = require('express-validator/filter');
 const User = require('../models/user.js');
 const Role = require('../models/roles');
-const Raven = require('raven');
 const authorize = require('../middlewares/authorize');
 
 app.get('/users', authorize.signIn, authorize.checkAccessMW('global.users.view'), (req, res) => {
@@ -42,7 +41,7 @@ app.post('/users/delete', authorize.signIn, authorize.checkAccessMW('global.user
     User.deleteOne({
         _id: req.body.id
     }, (err) => {
-        if (err) return Raven.captureException(err);
+        if (err) return console.log(err);
         req.flash('userEditSuccess', 'User deleted successfully!');
         res.redirect('back');
     });
@@ -74,12 +73,6 @@ app.post('/users/update', authorize.signIn, authorize.checkAccessMW('global.user
     }, {
         roles
     }).catch(err => {
-        Raven.setContext({
-            action: 'update users',
-            user: req.body.id,
-            newRoles: req.body.newRoles
-        });
-        Raven.captureException(err);
         req.flash('userEditFailure', 'Unknown error occured when updating.');
     });
     req.flash('userEditSuccess', 'User edited successfully!');

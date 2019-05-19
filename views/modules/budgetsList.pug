@@ -1,0 +1,79 @@
+.row
+    .col-md-12
+        .bgc-white.bd.bdrs-3.p-20.mB-20
+            h4.c-grey-900.mB-20 Edit 
+            if roleEditFailure
+                .alert.alert-danger #{roleEditFailure}
+            if roleEditSuccess
+                .alert.alert-success #{roleEditSuccess}
+            table#dataTable.table.table-striped.table-bordered(cellspacing='0', width='100%')
+                thead
+                    tr
+                        th Budget Name
+                        th Semester
+                        th Total Amount
+                        th Amount Used
+                        th More Information
+                tfoot
+                    tr
+                        th Budget Name
+                        th Semester
+                        th Total Amount
+                        th Amount Used
+                        th More Information
+                tbody
+                    for budget in budgets
+                        tr
+                            td #{budget.name}
+                                button.close(data-toggle="modal" type="button" data-target=`#deleteBudget${budget._id}`)
+                                    span(aria-hidden="true") &times;
+                                .modal.fade(id=`deleteBudget${budget._id}` tabindex="-1" role="dialog" aria-hidden="true")
+                                    .modal-dialog(role="document")
+                                        .modal-content
+                                            .modal-header
+                                                h5.modal-title#regenerateAPIKeyLabel Are you sure?
+                                                button.close(data-dismiss="modal" type="button" aria-label="Close")
+                                                    span(aria-hidden="true") &times;
+                                            .modal-body
+                                                p The budget "#{budget.name}" for #{budget.semester} will be deleted permanently. This is irreversible.
+                                            .modal-footer
+                                                button.btn.btn-secondary(data-dismiss="modal" type="button") Close
+                                                form(action="/budgets/delete" method="post")
+                                                    input(type='hidden' name='id' value=`${budget._id}`)
+                                                    button.btn.btn-danger Confirm
+                            td #{budget.semester}
+                            td $#{budget.amount.toFixed(2)}
+                            td $#{budget.used.toFixed(2)}
+                            td 
+                                button.btn.btn-primary(data-toggle="modal" type="button" data-target=`#info-${budget._id}`)
+                                    span(aria-hidden="tru") More Info
+                                .modal.fade(id=`info-${budget._id}` tabindex="-1" role="dialog" aria-hidden="true")
+                                    .modal-dialog(role="document")
+                                        .modal-content
+                                            .modal-header
+                                                h5.modal-title#regenerateAPIKeyLabel More Information
+                                                button.close(data-dismiss="modal" type="button" aria-label="Close")
+                                                    span(aria-hidden="true") &times;
+                                            .modal-body
+                                                table.table.table-borderless
+                                                    tbody
+                                                        tr
+                                                            th(scope="row") Budget Name
+                                                            td #{budget.name}
+                                                        tr
+                                                            th(scope="row") Semester
+                                                            td #{budget.semester}
+                                                        tr
+                                                            th(scope="row") Total Amount
+                                                            td $#{budget.amount.toFixed(2)}
+                                                        tr
+                                                            th(scope="row") Used Amount
+                                                            td $#{budget.used.toFixed(2)}
+                                                        tr 
+                                                            th(scope="row") Items
+                                                            td 
+                                                                each item, index in budget.items
+                                                                     p
+                                                                        a(href=`/spending#info-${item}`) Item #{index + 1}
+                                            .modal-footer
+                                                button.btn.btn-secondary(data-dismiss="modal" type="button") Close

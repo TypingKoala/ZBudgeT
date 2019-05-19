@@ -17,12 +17,3 @@ html
           a.btn.btn-primary(href='/', type='primary') Go to Home
     script(type='text/javascript', src='/vendor.js')
     script(type='text/javascript', src='/bundle.js')
-    script(type='text/javascript', src="https://cdn.ravenjs.com/3.15.0/raven.min.js")
-    if sentry_event_id
-      script.
-        Raven.showReportDialog({
-          eventId: '#{sentry_event_id}',
-
-          // use the public DSN (dont include your secret!)
-          dsn: 'https://e92de8eba7ff4a7e84a0d72e8ff61a8d@sentry.io/1256326'
-        });

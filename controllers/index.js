@@ -100,7 +100,7 @@ if (featuretoggles.isFeatureEnabled('mitLogin')) {
     } = require('openid-client');
     // Set up redirect_uri based on Node Environment
     if (process.env.NODE_ENV === 'production') {
-        var redirect_uri = 'https://zbudget.johnnybui.com/oidc';
+        var redirect_uri = 'http://dev.johnnybui.com:3000/oidc';
     } else {
         var redirect_uri = 'http://localhost:3000/oidc';
     }

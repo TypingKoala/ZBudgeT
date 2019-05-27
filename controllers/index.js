@@ -99,11 +99,7 @@ if (featuretoggles.isFeatureEnabled('mitLogin')) {
         Strategy
     } = require('openid-client');
     // Set up redirect_uri based on Node Environment
-    if (process.env.NODE_ENV === 'production') {
-        var redirect_uri = 'http://dev.johnnybui.com:3000/oidc';
-    } else {
-        var redirect_uri = 'http://localhost:3000/oidc';
-    }
+    var redirect_uri = process.env.oidc_redirect_uri;
     // Parameters for OIDC
     const params = {
         scope: "email,profile,openid",

@@ -32,7 +32,7 @@
     "mailgun-js": "^0.20.0",
     "md5": "^2.2.1",
     "mkdirp": "^0.5.1",
-    "mongoose": "^5.2.3",
+    "mongoose": "^5.7.5",
     "openid-client": "^2.2.1",
     "passport": "^0.4.0",
     "passport-headerapikey": "^1.0.5",

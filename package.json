@@ -38,7 +38,7 @@
     "passport-headerapikey": "^1.0.5",
     "passport-local": "^1.0.0",
     "pdfmake": "^0.1.37",
-    "pug": "^2.0.3",
+    "pug": "^3.0.1",
     "rename": "^1.0.4",
     "request": "^2.87.0",
     "rimraf": "^2.6.2",
